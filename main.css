@@ -1,0 +1,72 @@
+html {
+	background: url(uwm1.jpg) no-repeat center fixed;
+	background-size: cover;
+}
+
+#menubar {
+	background-color: #fafafa;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	border-bottom: solid 1px;
+	padding-left: 5px;
+	border-left: solid 5px #ffb900;
+	border-right: solid 5px #ffb900;
+}
+
+#menubar a{
+	text-decoration: none;
+}
+
+#content{
+	background-color: #fafafa;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	/*border: solid 1px;*/
+	border-top: solid 5px #ffb900;
+	padding-left: 50px;
+	padding-right: 50px;
+	padding-top: 25px;
+	padding-bottom:25px;
+	box-shadow:2px 2px #232323;
+}
+#content h1{
+	margin-top: 0px;
+}
+#content h2{
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-bottom:5px;
+}
+
+#submit {
+	position: relative;
+	left: 40%;
+}
+
+input[type=text]{
+	width:100%;
+	border: solid 1px;
+}
+input[type=submit]{
+	margin-top: 5px;
+}
+
+
+
+table{
+	border: 1px black solid;
+	width: 100%;
+}
+
+tr:nth-child(even) {
+	background: #CCC
+}
+
+tr:nth-child(odd) 
+	background: #FFF
+}
