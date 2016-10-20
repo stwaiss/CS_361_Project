@@ -1,17 +1,20 @@
-class Question:
+from reply import Reply
+
+class Question(object):
     def __init__(self, body, faqAttachments):
         self.body = body
-        self.faqAttachments = list()
 
-        for i in range(0, len(faqAttachments), 1):
-            self.faqAttachments.append(faqAttachments(i))
+        #faqAttachments is a list of ints, representing the indexes of applicable faqs from Course.faq[]
+        self.faqAttachments = faqAttachments
 
         self.replies = list()
         self.timestamps = list()
-        self.currentStatus = 0
 
     def getBody(self):
         return self.body
 
-    def getCurrentStatus(self):
-        return self.currentStatus
+    #forces replies list to only consist of reply objects. Don't use question.replies[0] = ...
+    def addReply(self, r):
+        if not isinstance(r, Reply):
+            raise TypeError("Question.replies only accepts Question Objects")
+        self.questions.append(r)

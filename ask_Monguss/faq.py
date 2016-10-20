@@ -1,6 +1,15 @@
-class FAQ:
+import types
+
+class FAQ(object):
     def __init__(self, q, a):
+        # forces faq question to be a string.
+        if not isinstance(q, types.StringType):
+            raise TypeError("FAQ.question only accepts String Objects")
         self.question = q
+
+        # forces faq answer to be a string.
+        if not isinstance(a, types.StringType):
+            raise TypeError("FAQ.answer only accepts String Objects")
         self.answer = a
         self.timestamp = ''
 
