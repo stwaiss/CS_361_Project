@@ -9,16 +9,10 @@ class Timestamp(object):
 
         #self.statuses is the associated status with each item in the self.timestamps list.
         #I.E., if len(self.timestamps) == 3, then the associated status would be "Teacher Replied"
-        self.statuses = list(
-            "Student Posted", "Teacher Viewed",
-            "Teacher Replied", "Student Viewed")
-
-    def updateTimestamp(self):
-        if len(self.timestamps) < 5:
-            self.timestamps.append(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
-    def getCurrentTimestamp(self):
-        return self.timestamps(len(self.timestamps) - 1)
-
-    def getCurrentStatus(self):
-        return self.statuses(len(self.timestamps) - 1)
+        #Python 2.7 doesn't have a "Java Enum" equivalent
+        self.statuses = {
+            '1': 'Student Posted',
+            '2': 'Teacher Viewed',
+            '3': 'Teacher Replied',
+            '4': 'Student Viewed'
+        }

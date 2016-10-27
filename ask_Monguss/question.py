@@ -1,14 +1,23 @@
+import types
 from reply import Reply
 
 class Question(object):
+    _body = ''
+    _faqAttachments = list()
+    _replies = list()
+    _timestamps = list()
+
+
     def __init__(self, body, faqAttachments):
-        self.body = body
+        if not isinstance(body, types.StringType):
+            raise TypeError("FAQ.question only accepts String Objects")
+        self._body = body
 
         #faqAttachments is a list of ints, representing the indexes of applicable faqs from Course.faq[]
-        self.faqAttachments = faqAttachments
+        self._faqAttachments = faqAttachments
 
-        self.replies = list()
-        self.timestamps = list()
+        self._replies = list()
+        self._timestamps = list()
 
     def getBody(self):
         return self.body

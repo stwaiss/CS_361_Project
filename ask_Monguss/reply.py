@@ -1,9 +1,12 @@
 import types
 
+
 class Reply(object):
+    _body = ''
+    _timestamps = list()
+    _currentStatus = 0
+
     def __init__(self, body):
         if isinstance(body, types.StringType):
             raise TypeError("Reply.body only accepts String Objects")
-        self.body = body
-        self.timestamps = list()
-        self.currentStatus = 0
+        self._body = body

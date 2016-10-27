@@ -15,6 +15,13 @@
 # limitations under the License.
 #
 import webapp2
+from student import Student
+from instructor import Instructor
+from course import Course
+from faq import FAQ
+from question import Question
+from timestamp import Timestamp
+from reply import Reply
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):

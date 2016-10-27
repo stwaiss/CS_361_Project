@@ -1,0 +1,4 @@
+jrock,abc123,1
+janedoe,123abc,0
+johndoe,123-abc,0
+jackdoe,abc-123,0

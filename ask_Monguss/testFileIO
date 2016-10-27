@@ -1,0 +1,42 @@
+from student import Student
+from instructor import Instructor
+
+
+def readInUsers():
+    allUsers = list()
+    users = open('usernames.txt', 'r')
+    i = 0
+
+    for line in users:
+        infoList = line.strip().split(',')
+        print infoList
+
+        if infoList[2] == str(0):
+            allUsers.append(Student(infoList[0], infoList[1]))
+        elif infoList[2] == str(1):
+            allUsers.append(Instructor(infoList[0], infoList[1]))
+        i+=1
+    return allUsers
+
+if __name__ == '__main__':
+    allusers = readInUsers()
+    print len(allusers)
+    for i in range(0, len(allusers), 1):
+        allusers[i].printInfo()
+
+
+# class test_main(unittest.TestCase):
+#     def test_readInUsers(self):
+#        foo = testthingy()
+#        roster = foo.readInUsers()
+#        self.assertEqual(roster[0].getePantherID(), "jrock")
+#
+#     def main(self):
+#         users = open("usernames.txt", "r")
+#         allUsers = list()
+#         print users.readline()
+#
+#     if __name__ == '__main__':
+#         main()
+#         # suite = unittest.TestLoader().loadTestsFromTestCase(testthingy)
+#         # unittest.TextTestRunner(verbosity=2).run(suite)
