@@ -6,6 +6,8 @@ class Question(object):
     _faqAttachments = list()
     _replies = list()
     _timestamps = list()
+    _student = ''
+    _instructor = ''
 
 
     def __init__(self, body, faqAttachments):
@@ -20,10 +22,16 @@ class Question(object):
         self._timestamps = list()
 
     def getBody(self):
-        return self.body
+        return self._body
 
     #forces replies list to only consist of reply objects. Don't use question.replies[0] = ...
     def addReply(self, r):
         if not isinstance(r, Reply):
             raise TypeError("Question.replies only accepts Question Objects")
         self.questions.append(r)
+
+	def getStudent(self):
+		return self._student
+
+	def getInstructor(self):
+		return self._instructor

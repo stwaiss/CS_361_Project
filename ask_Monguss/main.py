@@ -23,6 +23,8 @@ from question import Question
 from timestamp import Timestamp
 from reply import Reply
 
+questionList[]
+
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.write('Hello world!')
