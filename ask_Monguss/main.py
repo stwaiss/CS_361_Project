@@ -23,7 +23,7 @@ from question import Question
 from timestamp import Timestamp
 from reply import Reply
 
-questionList[]
+questionList = list()
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
