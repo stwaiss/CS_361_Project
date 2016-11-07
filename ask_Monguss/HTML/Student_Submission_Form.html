@@ -6,10 +6,10 @@
 </head>
 <body>
 		<div id="menubar">
-			<b>Namey McNameface</b> // 
-			<a href>Home</a> - 
+			<b>{{ username }}</b> // 
+			<a href="/student">Home</a> - 
 			<a href>Questions</a> - 
-			<a href>Submit a Question</a>
+			<a href="/ask">Submit a Question</a>
 		</div>
 	<div id="content">
 	<h1>Welcome to the UWM - <br> Submitting Questions Form </h1>
@@ -19,19 +19,17 @@
 
 	<p>Select your course: <select name="course">
 			<option value="default">Course</option>
-			<option value="CS-250">CS 250</option>
-			<option value="CS-251">CS 251</option>
-			<option value="CS-351">CS 351</option>
-			<option value="CS-361">CS 361</option>
+			{% for n in Courses %}
+			<option value="{{ n }}">{{ n }}</option>
+			{% endfor %}
 		</select> 
 	</p>
 
 
 	<p>Select your instructor: <select name="instructor">
-			<option value="instructor">Instructor</option>
-			<option value="instructor1">Instructor A</option>
-			<option value="instructor2">Instructor B</option>
-			<option value="instructor3">Instructor C</option>
+			{% for i in Instructors %}
+			<option value="instructor">{{ i }}</option>
+			{% endfor %}
 		</select> 
 	</p>
 
@@ -43,7 +41,9 @@
 		</select> 
 	</p>
 
-	<form>
+	<form method="POST" action="/ask">
+		<input type="hidden" name="user" value="{{ username }}">
+	
 		<textarea name="textbox" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>	
 		<input type="submit">
 	</form>

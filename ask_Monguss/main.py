@@ -130,7 +130,14 @@ class StudentAskHandler(webbapp2.RequestHandler):
 		self.response.write(template.render())
 
 	def post(self):
+		q = new question()
+		q._body = self.request.post('textbox')
+		q._instructor = self.request.post('instructor')
+		q._student = self.request.post('user')
+		q._title = q.getBody[:10]
 		
+		addQuestion(q)
+		postQuestionToGlobal()
 		
 		self.redirect('/student')
 

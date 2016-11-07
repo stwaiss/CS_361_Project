@@ -39,9 +39,9 @@ class Student(Person):
 		global questionList
 		tempList = list()
 		
-		for Question in questionList:
-			if Question.getStudent == self._ePantherID:
-				tempList.append(Question)
+		for question in questionList:
+			if question.getStudent == self.ePantherID
+				tempList.append(question)
 				
 		self._questions = tempList
 				
