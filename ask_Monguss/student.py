@@ -34,6 +34,27 @@ class Student(Person):
 
     def getQuestion(self, i):
         return self._questions[i]
+		
+	def getQuestionsFromGlobal(self):
+		global questionList
+		tempList = list()
+		
+		for Question in questionList:
+			if Question.getStudent == self._ePantherID:
+				tempList.append(Question)
+				
+		self._questions = tempList
+				
+	def postQuestionToGlobal(self):
+		global questionList
+		
+		for Question in self._questions:
+			for I in questionList:
+				if Question.getTitle == I.getTitle:
+					continue
+				else:
+					questionList.append(Question)
+	
 
 class testStudent(unittest.TestCase):
     def testStudentInit(self):

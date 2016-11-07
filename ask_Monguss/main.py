@@ -25,7 +25,10 @@ from question import Question
 from timestamp import Timestamp
 from reply import Reply
 
+questionList = list()
+
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
 
 class MainHandler(webapp2.RequestHandler):
     def checkForMatch(self, username, password):
@@ -89,13 +92,13 @@ class LoginHandler(webapp2.RequestHandler):
 
 
 class StudentLandingPageHandler(webapp2.RequestHandler):
-    def post(self):
+    def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
         self.response.write(template.render())
 
 
 class InstructorLandingPageHandler(webapp2.RequestHandler):
-    def post(self):
+    def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
         self.response.write(template.render())
 
@@ -146,12 +149,23 @@ class AccountCreationHandler(webapp2.RequestHandler):
 
         users.close()
 
+class StudentAskHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
+        self.response.write(template.render())
+
+    def post(self):
+        self.redirect('/student')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
     ('/student', StudentLandingPageHandler),
     ('/instructor', InstructorLandingPageHandler),
-    ('/create', AccountCreationHandler)
+    ('/create', AccountCreationHandler),
+    ('/student', StudentLandingPageHandler),
+    ('/instructor', InstructorLandingPageHandler),
+    ('/create', AccountCreationHandler),
+    ('/ask', StudentAskHandler)
 
 ], debug=True)
