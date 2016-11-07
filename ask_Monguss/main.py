@@ -27,44 +27,63 @@ from reply import Reply
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-
 class MainHandler(webapp2.RequestHandler):
-    postedUsername = ""
-    postedPassword = ""
+    def checkForMatch(self, username, password):
+        # open text file
+        users = open('usernames.txt', 'r')
+
+        # iterate over text file looking for match
+        for line in users:
+            infoList = line.strip().split(',')
+
+            if infoList[0] == username:
+                if infoList[1] == password:
+                    # return isInstructor value
+                    if infoList[2] == 0:
+                        return 0
+                    else:
+                        return 1
+        # if user is not matched, return -1
+        return -1
 
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
         self.response.write(template.render())
 
+class LoginHandler(webapp2.RequestHandler):
+    postedUsername = ""
+    postedPassword = ""
+    match = -1
+
+    def checkForMatch(self, username, password):
+        # open text file
+        users = open('usernames.txt', 'r')
+
+        # iterate over text file looking for match
+        for line in users:
+            infoList = line.strip().split(',')
+
+            if infoList[0] == str(username):
+                if infoList[1] == str(password):
+                    # return isInstructor value
+                    if infoList[2] == str(0):
+                        return 0
+                    elif infoList[2] == str(1):
+                        return 1
+        # if user is not matched, return -1
+        return -1
+
     def post(self):
         self.postedUsername = self.request.get('ePantherID')
         self.postedPassword = self.request.get('password')
 
-class LoginHandler(webapp2.RequestHandler):
-    def checkForMatch(self, postedUsername, postedPassword):
-        #open text file
-        users = open('usernames.txt', 'r')
+        self.match = self.checkForMatch(self.postedUsername, self.postedPassword)
 
-        #iterate over text file looking for match
-        for line in users:
-            infoList = line.strip().split(',')
 
-            if infoList[0] == MainHandler.postedUsername:
-                if infoList[1] == MainHandler.postedPassword:
-                    #return isInstructor value
-                    if infoList[2] == 0:
-                        return 0
-                    else:
-                        return 1
-        #if user is not matched, return -1
-        return -1
-
-    def post(self):
-        match = self.checkForMatch(MainHandler.postedUsername, MainHandler.postedPassword)
         values = {
-            'credentials': match,
-            'username': MainHandler.postedUsername,
-            'password': MainHandler.postedPassword
+            'credentials': self.match,
+            'username': self.postedUsername,
+            'password': self.postedPassword
         }
         template = JINJA_ENVIRONMENT.get_template('HTML/login_dummy.html')
         self.response.write(template.render(values))
@@ -75,10 +94,16 @@ class StudentLandingPage(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
         self.response.write(template.render())
 
+    def post(self):
+        pass
+
 class InstructorLandingPage(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
         self.response.write(template.render())
+
+    def post(self):
+        pass
 
 class AccountCreationHandler(webapp2.RequestHandler):
     def get(self):

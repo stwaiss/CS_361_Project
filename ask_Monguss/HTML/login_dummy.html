@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Redirect</title>
-
     {% if credentials == 1 %}
-    <noscript>
         <meta charset="UTF-8" http-equiv="refresh" content="0"; url="/instructor">
-    </noscript>
 
     {% elif credentials == 0 %}
-    <noscript>
         <meta charset="UTF-8" http-equiv="refresh" content="0"; url="/student">
-    </noscript>
 
     {% else %}
-    <noscript>
         <meta charset="UTF-8" http-equiv="refresh" content="0"; url="/">
-    </noscript>
     {% endif %}
+    <title>Redirect</title>
 
 </head>
 <body>
