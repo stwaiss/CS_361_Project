@@ -25,6 +25,8 @@ from question import Question
 from timestamp import Timestamp
 from reply import Reply
 
+questionList = list()
+
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 class MainHandler(webapp2.RequestHandler):
@@ -122,15 +124,22 @@ class AccountCreationHandler(webapp2.RequestHandler):
         #check file for matching user name
         #if matched, give error, if not, write to file
 
+class StudentAskHandler(webbapp2.RequestHandler):
+	def get(self):
+		template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
+		self.response.write(template.render())
 
-
-
+	def post(self):
+		
+		
+		self.redirect('/student')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
     ('/student', StudentLandingPage),
     ('/instructor', InstructorLandingPage),
-    ('/create', AccountCreationHandler)
+    ('/create', AccountCreationHandler),
+	('/ask', StudentAskHandler)
 
 ], debug=True)
