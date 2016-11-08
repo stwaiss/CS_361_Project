@@ -29,6 +29,7 @@ questionList = list()
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
+
 class MainHandler(webapp2.RequestHandler):
     def checkForMatch(self, username, password):
         # open text file
@@ -81,7 +82,6 @@ class LoginHandler(webapp2.RequestHandler):
 
         self.match = self.checkForMatch(self.postedUsername, self.postedPassword)
 
-
         values = {
             'credentials': self.match,
             'username': self.postedUsername,
@@ -91,26 +91,23 @@ class LoginHandler(webapp2.RequestHandler):
         self.response.write(template.render(values))
 
 
-class StudentLandingPage(webapp2.RequestHandler):
+class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
         self.response.write(template.render())
 
-    def post(self):
-        pass
 
-class InstructorLandingPage(webapp2.RequestHandler):
+class InstructorLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
         self.response.write(template.render())
 
-    def post(self):
-        pass
 
 class AccountCreationHandler(webapp2.RequestHandler):
     def get(self):
         #Render HTML
-        pass
+        template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+        self.response.write(template.render())
 
     def post(self):
         pass
@@ -119,34 +116,56 @@ class AccountCreationHandler(webapp2.RequestHandler):
         #
         # type = self.request.get("type")
         #
-        #
         #open file
         #check file for matching user name
         #if matched, give error, if not, write to file
 
-class StudentAskHandler(webbapp2.RequestHandler):
-	def get(self):
-		template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
-		self.response.write(template.render())
+        username=self.request.get('ePantherID')
+        password=self.request.get('password')
+        credential=self.request.get('credential')
 
-	def post(self):
-		q = new question()
-		q._body = self.request.post('textbox')
-		q._instructor = self.request.post('instructor')
-		q._student = self.request.post('user')
-		q._title = q.getBody[:10]
-		
-		addQuestion(q)
-		postQuestionToGlobal()
-		
-		self.redirect('/student')
+        users=open('usernames.txt', 'r')
+
+        userAlreadyExists = 0
+        for line in users:
+            infoList = line.strip().split(',')
+
+            if infoList[0] == str(username):
+                userAlreadyExists = 1
+                values = {
+                    'userAlreadyExists': userAlreadyExists,
+                    'username': username
+                }
+                #Refresh and write error message
+                template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+                self.response.write(template.render(values))
+                break
+
+        #### GAE does not support writing to local text files.
+        # if credential == "instructor":
+        #    users.write(username + ',' + password + ',1')
+        # elif credential == "student":
+        #    users.write(username + ',' + password + ',0')
+
+        users.close()
+
+class StudentAskHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
+        self.response.write(template.render())
+
+    def post(self):
+        self.redirect('/student')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
-    ('/student', StudentLandingPage),
-    ('/instructor', InstructorLandingPage),
+    ('/student', StudentLandingPageHandler),
+    ('/instructor', InstructorLandingPageHandler),
     ('/create', AccountCreationHandler),
-	('/ask', StudentAskHandler)
+    ('/student', StudentLandingPageHandler),
+    ('/instructor', InstructorLandingPageHandler),
+    ('/create', AccountCreationHandler),
+    ('/ask', StudentAskHandler)
 
 ], debug=True)

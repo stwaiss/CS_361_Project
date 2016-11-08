@@ -6,10 +6,10 @@ class Question(object):
     _faqAttachments = list()
     _replies = list()
     _timestamps = list()
-	_student = ''
-	_instructor = ''
-	_title = ''
-	_status = ''
+    _student = ''
+    _instructor = ''
+    _title = ''
+    _status = ''
 
 
     def __init__(self, body, faqAttachments):

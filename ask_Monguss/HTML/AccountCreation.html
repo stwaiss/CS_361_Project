@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Create a new account</title>
+        <link rel="stylesheet" type="text/css" href="CSS/main.css">
+
+                <style>
+                label{
+                    float: center;
+                    width: 150px;
+                }
+
+                .loginBox{
+                    float: center;
+                }
+
+                .button{
+                    margin-left: 245px;
+                    margin-top: 10px;
+                }
+            </style>
+    </head>
+
+    <body>
+        <div id="content">
+            <center>
+                <h1>Create a new user</h1>
+                {% if userAlreadyExists == 1 %}
+                <p style="color:red"><b>"{{username}}" already exists in system</b></p>
+                {% endif %}
+                <form method="post" name ="newAccountForm">
+                    <label>New Username:</label><input type="text" class="loginbox" name="ePantherID" required="true">
+                    <br>
+                    <label>Password:</label><input type="text" name="password" required="true">
+                    <br>
+                    <label>Credential Type</label>
+                    <br>
+                    Instructor:<input type="radio" name="credential" value = "instructor" required="true">
+                    Student:<input type="radio" name="credential" value = "student" required="true">
+                    <br>
+                    <input class="button" type="submit">
+                </form>
+            </center>
+        </div>
+    </body>
+</html>
