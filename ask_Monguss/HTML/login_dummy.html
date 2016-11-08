@@ -1,21 +1,43 @@
+<!-- This file has been deprecated as of 11/8/16 by Sean Waiss-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% if credentials == 1 %}
-        <meta charset="UTF-8" http-equiv="refresh" content="0"; url="/instructor">
-
-    {% elif credentials == 0 %}
-        <meta charset="UTF-8" http-equiv="refresh" content="0"; url="/student">
-
-    {% else %}
-        <meta charset="UTF-8" http-equiv="refresh" content="0"; url="/">
-    {% endif %}
     <title>Redirect</title>
+    <link rel="stylesheet" type="text/css" href="CSS/main.css">
+        <style>
+            label{
+                float: center;
+                width: 150px;
+            }
 
+            .loginBox{
+                float: center;
+            }
+
+            .button{
+                margin-left: 245px;
+                margin-top: 10px;
+            }
+        </style>
 </head>
 <body>
-    <h1>{{credentials}}</h1>
-    <h2>{{username}}</h2>
-    <h2>{{password}}</h2>
+    <div id="content">
+        <center>
+            {% if credentials == 0 %}
+            <h1>Welcome Student "{{username}}"</h1>
+            <form action="/student">
+                <input type="submit" value="Continue">
+            </form>
+            {% endif %}
+
+            {% if credentials == 1 %}
+            <h1>Welcome Instructor "{{username}}"</h1>
+            <form action="/instructor">
+                <input type="submit" value="Continue">
+            </form>
+            {% endif %}
+       </center>
+    </div>
 </body>
 </html>

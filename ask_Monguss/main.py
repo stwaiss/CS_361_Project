@@ -53,6 +53,7 @@ class MainHandler(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
         self.response.write(template.render())
 
+
 class LoginHandler(webapp2.RequestHandler):
     postedUsername = ""
     postedPassword = ""
@@ -82,18 +83,42 @@ class LoginHandler(webapp2.RequestHandler):
 
         self.match = self.checkForMatch(self.postedUsername, self.postedPassword)
 
-        values = {
-            'credentials': self.match,
-            'username': self.postedUsername,
-            'password': self.postedPassword
-        }
-        template = JINJA_ENVIRONMENT.get_template('HTML/login_dummy.html')
-        self.response.write(template.render(values))
+        if self.match == -1:
+            values = {
+                'credentials': self.match
+            }
+
+            template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
+            self.response.write(template.render(values))
+            return
+
+        elif self.match == 0:
+            self.redirect('/student')
+            return
+
+        elif self.match == 1:
+            self.redirect('/instructor')
+            return
 
 
 class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
+        self.response.write(template.render())
+
+
+class StudentAskHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
+        self.response.write(template.render())
+
+    def post(self):
+        self.redirect('/student')
+
+
+class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/Student_View_All_Answers.html')
         self.response.write(template.render())
 
 
@@ -149,23 +174,13 @@ class AccountCreationHandler(webapp2.RequestHandler):
 
         users.close()
 
-class StudentAskHandler(webapp2.RequestHandler):
-    def get(self):
-        template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
-        self.response.write(template.render())
-
-    def post(self):
-        self.redirect('/student')
-
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
     ('/student', StudentLandingPageHandler),
+    ('/student/ask', StudentAskHandler),
+    ('/student/view_all', StudentViewAllQuestionsHandler),
     ('/instructor', InstructorLandingPageHandler),
-    ('/create', AccountCreationHandler),
-    ('/student', StudentLandingPageHandler),
-    ('/instructor', InstructorLandingPageHandler),
-    ('/create', AccountCreationHandler),
-    ('/ask', StudentAskHandler)
+    ('/instructor/create', AccountCreationHandler)
 
 ], debug=True)

@@ -1,15 +1,15 @@
 <!DOCTYPE <html>
 <head>
 	<title>UWM - Submiting Questions Form - Student</title>
-	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
-	<link rel="stylesheet" type="text/css" href="CSS/main.css">
+	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
+	<link rel="stylesheet" type="text/css" href="../CSS/Student_Submission_Form.css">
 </head>
 <body>
 		<div id="menubar">
-			<b>{{ username }}</b> // 
-			<a href="/student">Home</a> - 
-			<a href>Questions</a> - 
-			<a href="/ask">Submit a Question</a>
+			<b>Namey McNameface</b> //
+			<a href="/student">Home</a> -
+			<a href="/student/view_all">Questions</a> -
+			<a href="/student/ask">Submit a Question</a>
 		</div>
 	<div id="content">
 	<h1>Welcome to the UWM - <br> Submitting Questions Form </h1>
@@ -19,17 +19,19 @@
 
 	<p>Select your course: <select name="course">
 			<option value="default">Course</option>
-			{% for n in Courses %}
-			<option value="{{ n }}">{{ n }}</option>
-			{% endfor %}
+			<option value="CS-250">CS 250</option>
+			<option value="CS-251">CS 251</option>
+			<option value="CS-351">CS 351</option>
+			<option value="CS-361">CS 361</option>
 		</select> 
 	</p>
 
 
 	<p>Select your instructor: <select name="instructor">
-			{% for i in Instructors %}
-			<option value="instructor">{{ i }}</option>
-			{% endfor %}
+			<option value="instructor">Instructor</option>
+			<option value="instructor1">Instructor A</option>
+			<option value="instructor2">Instructor B</option>
+			<option value="instructor3">Instructor C</option>
 		</select> 
 	</p>
 
@@ -41,9 +43,7 @@
 		</select> 
 	</p>
 
-	<form method="POST" action="/ask">
-		<input type="hidden" name="user" value="{{ username }}">
-	
+	<form>
 		<textarea name="textbox" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>	
 		<input type="submit">
 	</form>

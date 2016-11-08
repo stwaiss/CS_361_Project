@@ -5,8 +5,8 @@
 			ePantherID Login
 		</title>
 		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
-		<link rel="stylesheet" type="text/css" href="CSS/main.css">
-		<link rel="stylesheet" type="text/css" href="CSS/ePantherID_Log-in.css">
+		<link rel="stylesheet" type="text/css" href="../CSS/main.css">
+		<link rel="stylesheet" type="text/css" href="../CSS/ePantherID_Log-in.css">
 
 
 	</head>
@@ -15,6 +15,9 @@
 	<div id="content">
 		<center>
 			<h1>UWM ePantherID Login Form </h1>
+			{% if credentials == -1 %}
+             <p style="color:red"><b>Incorrect username or password</b></p>
+            {% endif %}
 			<div id="loginForm">
 				<form action="/login" method="POST">
 				<label>ePantherID:</label><input class='loginBox' type="text" name="ePantherID" maxlength="10">
