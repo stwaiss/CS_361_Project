@@ -15,6 +15,9 @@
 	<div id="content">
 		<center>
 			<h1>UWM ePantherID Login Form </h1>
+			{% if credentials == -1 %}
+             <p style="color:red"><b>Incorrect username or password</b></p>
+            {% endif %}
 			<div id="loginForm">
 				<form action="/login" method="POST">
 				<label>ePantherID:</label><input class='loginBox' type="text" name="ePantherID" maxlength="10">

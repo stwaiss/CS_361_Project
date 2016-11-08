@@ -82,10 +82,18 @@ class LoginHandler(webapp2.RequestHandler):
 
         self.match = self.checkForMatch(self.postedUsername, self.postedPassword)
 
+        if self.match == -1:
+            values = {
+                'credentials': self.match
+            }
+
+            template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
+            self.response.write(template.render(values))
+            return
+
         values = {
             'credentials': self.match,
-            'username': self.postedUsername,
-            'password': self.postedPassword
+            'username': self.postedUsername
         }
         template = JINJA_ENVIRONMENT.get_template('HTML/login_dummy.html')
         self.response.write(template.render(values))
@@ -165,7 +173,7 @@ app = webapp2.WSGIApplication([
     ('/create', AccountCreationHandler),
     ('/student', StudentLandingPageHandler),
     ('/instructor', InstructorLandingPageHandler),
-    ('/create', AccountCreationHandler),
-    ('/ask', StudentAskHandler)
+    ('/instructor/create', AccountCreationHandler),
+    ('/student/ask', StudentAskHandler)
 
 ], debug=True)
