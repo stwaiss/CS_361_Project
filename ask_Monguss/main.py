@@ -92,12 +92,13 @@ class LoginHandler(webapp2.RequestHandler):
             self.response.write(template.render(values))
             return
 
-        values = {
-            'credentials': self.match,
-            'username': self.postedUsername
-        }
-        template = JINJA_ENVIRONMENT.get_template('HTML/login_dummy.html')
-        self.response.write(template.render(values))
+        elif self.match == 0:
+            self.redirect('/student')
+            return
+
+        elif self.match == 1:
+            self.redirect('/instructor')
+            return
 
 
 class StudentLandingPageHandler(webapp2.RequestHandler):
