@@ -110,10 +110,19 @@ class StudentLandingPageHandler(webapp2.RequestHandler):
 class StudentAskHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
-        self.response.write(template.render())
+        self.response.write(template.render('user'=self.user.postedUsername, 'course'=self.user._courses, 'instructor'=self.user._courses._instructors))
 
     def post(self):
-        self.redirect('/student')
+		q = question()
+		q._body = self.request.get('textbox')
+		q._student = self.request.get('user')
+		q._instructor = self.request.get('instructor')
+		q._title = q.getBody[:10]
+		
+		self.user.addQuestion(q)
+		self.user.postQuestionToGlobal()
+	
+		self.redirect('/student')
 
 
 class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
