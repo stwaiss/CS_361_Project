@@ -124,6 +124,10 @@ class StudentAskHandler(webapp2.RequestHandler):
 	
 		self.redirect('/student')
 
+class StudentFAQHandler(webapp2.RequestHandler):
+   def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/FAQ.html')
+        self.response.write(template.render())
 
 class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
@@ -183,13 +187,22 @@ class AccountCreationHandler(webapp2.RequestHandler):
 
         users.close()
 
+
+class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
+        self.response.write(template.render())
+
+
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
     ('/student', StudentLandingPageHandler),
     ('/student/ask', StudentAskHandler),
+    ('/student/faq', StudentFAQHandler),
     ('/student/view_all', StudentViewAllQuestionsHandler),
     ('/instructor', InstructorLandingPageHandler),
-    ('/instructor/create', AccountCreationHandler)
+    ('/instructor/create', AccountCreationHandler),
+    ('/instructor/view_all', InstructorViewAllQuestionsHandler)
 
 ], debug=True)
