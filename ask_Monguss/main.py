@@ -115,7 +115,7 @@ class StudentAskHandler(webapp2.RequestHandler):
 		user.addCourse(cs361)
 		cs361.addStudent(user)
 		cs361.addInstructor(instructor("jrock", "123abc")
-        template = JINJA_ENVIRONMENT.get_template('HTML/StudentSubmissionForm.html')
+        template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
         self.response.write(template.render('user'=user._ePantherID, 'course'=user._courses, 'instructor'=user._courses._instructors))
 
     def post(self):
