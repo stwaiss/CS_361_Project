@@ -1,6 +1,7 @@
 import types
 from reply import Reply
 
+
 class Question(object):
     _body = ''
     _faqAttachments = list()
@@ -10,7 +11,6 @@ class Question(object):
     _instructor = ''
     _title = ''
     _status = ''
-
 
     def __init__(self, body):
         if not isinstance(body, types.StringType):
@@ -22,15 +22,15 @@ class Question(object):
 
     def getBody(self):
         return self._body
-		
-	def getTitle(self):
-		return self._title
-		
-	def getStudent(self):
-		return self._student
-		
-	def getInstructor(self):
-		return self._instructor
+
+    def getTitle(self):
+        return self._title
+
+    def getStudent(self):
+        return self._student
+
+    def getInstructor(self):
+        return self._instructor
 
     #forces replies list to only consist of reply objects. Don't use question.replies[0] = ...
     def addReply(self, r):
