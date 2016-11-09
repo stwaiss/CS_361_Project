@@ -20,10 +20,12 @@
             {% endif %}
 			<div id="loginForm">
 				<form action="/login" method="POST">
-				<label>ePantherID:</label><input class='loginBox' type="text" name="ePantherID" maxlength="10">
-				<br>
-				<label>Password:</label><input class='passwordBox' type="password" name="password" maxlength="15">
-				<br>
+				<table style="width:250px; border:none">
+					<tr>
+				<td align="right">ePantherID:</td><td><input class='loginBox' type="text" name="ePantherID" maxlength="10">
+				<tr style="background-color:white">
+				<td align="right">Password:  </td><td><input class='passwordBox' type="password" name="password" maxlength="15">
+				</table>
 				<input class="button" type="Submit" value="Log-In">
 				</form>
 			</div>

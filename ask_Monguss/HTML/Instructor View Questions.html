@@ -1,25 +1,21 @@
-<!DOCTYPE HTML>
-<HTML>
-	<head>
-		<title>Instructor - View All Questions</title>
-		<link rel="stylesheet" type="text/css" href="../CSS/main.css">
-		<link rel="stylesheet" type="text/css" href="../CSS/layout.css">
-	</head>
-	<body>
-		<div id="menubar">
-			<b>Namey McNameface</b> //
-			<a href="/instructor">Home</a> -
-			<a href="/instructor/view_all">Questions</a> -
-			<a href="/instructor/create">Create new users</a>
-		</div>
+<!DOCTYPE html>
+<head>
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="../CSS/main.css">
+</head>
+<body>
 
-		<div id="menu">
-		</div>
-		
-		<div id="content">
-		<div id="questions">
-		<center>
-			<table width="100%">
+<div id="menubar">
+	<b>Namey McNameface</b> //
+	<a href="/instructor">Home</a> -
+	<a href="/instructor/view_all">Questions</a> -
+	<a href="/instructor/create">Create new users</a>
+</div>
+
+<div id="content">
+	{% for course in instructor._courses %}
+		<h2>{{ course._courseName }}</h2>
+		<table width="100%">
 				<thead>
 					<tr>
 						<th>Question</th>
@@ -28,25 +24,23 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>When is the homework do?</td>
-						<td>John B. Lazy</td>
-						<td>Oct 1, 2016</td>
-					</tr>
-					<tr>
-						<td>Is this class curved? And how heavily?</td>
-						<td>Ima Fayl</td>
-						<td>Oct 8, 2016</td>
-					</tr>
-					<tr>
-						<td>What is the worst movie you've seen?</td>
-						<td>John Do</td>
-						<td>Oct 10, 2016</td>
-					</tr>
+					{% for question in course._questions %}
+						<tr>
+							<td> <b> {{ question.getBody() }} </b> </td>
+							<td> {{ question._student }} </td>
+							<td> {{ question._timestamps[0] }} </td>
+						</tr>
+						<tr>
+							<td colspan="3"> {{ question.answer }} </td>
+						</tr>
+					{% endfor %}
 				</tbody>
-			</table>
-			</center>
-		</div>
-		</div>
-	</body>
-</HTML>
+		</table>
+		<br />
+	{% endfor %}
+	<form method="get" action="/instructor">
+		<input type="submit" value="Back to Instructor Landing Page" />
+	</form>
+</div>
+</body>
+</html>

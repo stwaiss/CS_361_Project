@@ -27,11 +27,21 @@
 					<tr>
 						<td>{{ q._body }}</td>
 						<td>{{ q._timestamp }}</td>
-						<td>Unanswered</td>
+						<td>Unanswered (NYI)</td>
 					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
+			<center>
+			<form method="get" action="/student/ask">
+				<input type="submit" value="Ask a Question" />
+			</form>
+
+			For testing purposes:
+			<form method="get" action="/instructor">
+				<input type="submit" value="Switch to Instructor" />
+			</form> </center>
+		</div>
 		</div>
 	</body>
 </html>

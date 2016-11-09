@@ -29,6 +29,15 @@ import datetime
 
 questionList = list()
 
+#Mockup help
+sampleStudent = Student("Sample Student","abc123")
+sampleInstructor = Instructor("Sample Instructor","abc123")
+sampleCourse = Course("Sample Course")
+sampleInstructor.addCourse(sampleCourse)
+sampleStudent.addCourse(sampleCourse)
+sampleCourse.addStudent(sampleStudent)
+sampleCourse.addQuestion(Question("This is a default question."))
+
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 
@@ -110,28 +119,35 @@ class StudentLandingPageHandler(webapp2.RequestHandler):
 
 
 class StudentAskHandler(webapp2.RequestHandler):
-	def get(self):
-		user = Student("jacksonj", "abc123")
-		cs361 = Course("cs361")
-		user.addCourse("cs361")
-		cs361.addStudent(user)
-		inst = list()
-		inst.append(Instructor("rock", "123abc"))
-		inst.append(Instructor("other", "543zyx"))
-		template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
-		self.response.write(template.render(user=user._ePantherID,course=user._courses,instructor=inst))
+    def get(self):
+        user = Student("jacksonj", "abc123")
+        cs361 = Course("cs361")
+        user.addCourse("cs361")
+        cs361.addStudent(user)
+        inst = list()
+        inst.append(Instructor("rock", "123abc"))
+        inst.append(Instructor("other", "543zyx"))
 
-	def post(self):
-		user = Student("jacksonj", "abc123")
-		q = Question(str(self.request.get('textbox')))
-		q._student = self.request.get('user')
-		q._instructor = self.request.get('instructor')
-		q.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%m-%d-%Y')
-		
-		user.addQuestion(q)
-		questionList.append(q)
-	
-		self.redirect('/student')
+        values = {
+            'user':user._ePantherID,
+            'course': user._courses,
+            'instructor': inst
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
+        self.response.write(template.render(values))
+
+    def post(self):
+        user = Student("jacksonj", "abc123")
+        q = Question(str(self.request.get('textbox')))
+        q._student = self.request.get('user')
+        q._instructor = self.request.get('instructor')
+        q.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%m-%d-%Y')
+
+        user.addQuestion(q)
+        questionList.append(q)
+
+        self.redirect('/student')
 
 class StudentFAQHandler(webapp2.RequestHandler):
    def get(self):
@@ -199,8 +215,10 @@ class AccountCreationHandler(webapp2.RequestHandler):
 
 class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
+        global sampleInstructor
+
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
-        self.response.write(template.render())
+        self.response.write(template.render(instructor = sampleInstructor))
 
 
 app = webapp2.WSGIApplication([

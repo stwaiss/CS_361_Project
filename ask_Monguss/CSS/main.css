@@ -48,10 +48,11 @@ html {
 	left: 40%;
 }
 
-input[type=text]{
-	width:100%;
+/*input[type=text]{
+	width:10%;
 	border: solid 1px;
 }
+*/
 input[type=submit]{
 	margin-top: 5px;
 }

@@ -13,44 +13,50 @@
 			<a href="/instructor/create">Create new users</a>
 		</div>
 
-
-		<div id="menu">
 		<div id="content">
-		<div id="inst_home">
-			<div id="greeting">
-				<h4>Good Morning Professor</h4>
-			</div>
+			<div id="inst_home">
+				<div id="greeting">
+					<h4>Good Morning Professor</h4>
+				</div>
 
-			<div id="stats">
-				<table>
-					<thead>
-						<tr>
-							<th>Questions</th>
-							<th>#</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Unanswered</td>
-							<td>102</td>
-						</tr>
-						<tr>
-							<td>In draft</td>
-							<td>12</td>
-						</tr>
-						<tr>
-							<td>Answered</td>
-							<td>5</td>
-						</tr>
-					</tbody>
-				</table>
-				<br/>
-				<br/>
-				Oldest Unanswered Question is from: Sept 12, 2016.
-				<br/>
-				Newest Unanswered Question is from: Oct 12, 2016.
+				<div id="stats">
+					<table>
+						<thead>
+							<tr>
+								<th>Questions</th>
+								<th>#</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Unanswered</td>
+								<td align="center">102 (NYI)</td>
+							</tr>
+							<tr>
+								<td>In draft</td>
+								<td align="center">12 (NYI)</td>
+							</tr>
+							<tr>
+								<td>Answered</td>
+								<td align="center">5 (NYI)</td>
+							</tr>
+						</tbody>
+					</table>
+					<center> <form method="get" action="/instructor/view_all">
+						<input type="submit" value="View Questions" />
+					</form> </center>
+
+					<br/>
+
+					Oldest Unanswered Question is from: Sept 12, 2016.
+					<br/>
+					Newest Unanswered Question is from: Oct 12, 2016.
+				</div>
 			</div>
+			<center> <form method="get" action="/student">
+				<input type="submit" value="Switch to Student" />
+			</form> </center>
 		</div>
-		</div>
+
 	</body>
 </html>					

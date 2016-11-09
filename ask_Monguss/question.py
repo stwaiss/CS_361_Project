@@ -21,7 +21,7 @@ class Question(object):
         self._timestamps = list()
 
     def getBody(self):
-        return self.body
+        return self._body
 		
 	def getTitle(self):
 		return self._title
