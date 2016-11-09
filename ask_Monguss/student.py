@@ -7,6 +7,8 @@ from question import Question
 class Student(Person):
     _courses = list()
     _questions = list()
+	_name = ''
+	_ePantherID = ''
 
     def __init__(self, ePantherID, password):
         super(Student, self).__init__(ePantherID, password, 0)

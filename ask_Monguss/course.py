@@ -26,7 +26,7 @@ class Course(object):
     # forces instructor list to only consist of instructor objects. Don't use course.instructor[0] = ...
     def addInstructor(self, i):
         if not isinstance(i, Instructor):
-            raise TypeError("Course.instructor only accepts Question Objects")
+            raise TypeError("Course.instructor only accepts Instructor Objects")
         self._instructors.append(i)
 
     # forces questions list to only consist of question objects. Don't use courses.questions[0] = ...
