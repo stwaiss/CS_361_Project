@@ -122,15 +122,14 @@ class StudentAskHandler(webapp2.RequestHandler):
 		self.response.write(template.render(user=user._ePantherID,course=user._courses,instructor=inst))
 
 	def post(self):
-		ts = time.time()
 		user = Student("jacksonj", "abc123")
 		q = Question(str(self.request.get('textbox')))
 		q._student = self.request.get('user')
 		q._instructor = self.request.get('instructor')
-		q.timestamp = datetime.datetime.fromtimestamp(ts).strftime('%m-%d-%Y')
+		q.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%m-%d-%Y')
 		
 		user.addQuestion(q)
-		questionList.append(user.postQuestionToGlobal())
+		questionList.append(q)
 	
 		self.redirect('/student')
 
