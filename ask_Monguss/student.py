@@ -5,44 +5,43 @@ from question import Question
 
 
 class Student(Person):
-    _courses = list()
-    _questions = list()
+	_courses = list()
+	_questions = list()
 	_name = ''
-	_ePantherID = ''
 
-    def __init__(self, ePantherID, password):
-        super(Student, self).__init__(ePantherID, password, 0)
+	def __init__(self, ePantherID, password):
+		super(Student, self).__init__(ePantherID, password, 0)
 
-    def getCourseByName(self, name):
-        for i in range(0, len(self._courses), 1):
-            if self._courses[i].getName() == name:
-                return self._courses[i]
-        return -1
+	def getCourseByName(self, name):
+		for i in range(0, len(self._courses), 1):
+			if self._courses[i].getName() == name:
+				return self._courses[i]
+		return -1
 
-    def getCourseByIndex(self, i):
-        return self._courses[i]
+	def getCourseByIndex(self, i):
+		return self._courses[i]
 
     #forces courses list to only consist of course objects. Don't use student.courses[0] = ...
-    def addCourse(self, c):
-        if not isinstance(c, Course):
-            raise TypeError("Student.questions only accepts Course Objects")
-        self._courses.append(c)
+	def addCourse(self, c):
+		if not isinstance(c, Course):
+			raise TypeError("Student.questions only accepts Course Objects")
+		self._courses.append(c)
 
     #forces questions list to only consist of question objects. Don't use student.questions[0] = ...
-    def addQuestion(self, q):
-        if not isinstance(q, Question):
-            raise TypeError("Student.questions only accepts Question Objects")
-        self._questions.append(q)
+	def addQuestion(self, q):
+		if not isinstance(q, Question):
+			raise TypeError("Student.questions only accepts Question Objects")
+		self._questions.append(q)
 
-    def getQuestion(self, i):
-        return self._questions[i]
+	def getQuestion(self, i):
+		return self._questions[i]
 		
 	def getQuestionsFromGlobal(self):
 		global questionList
 		tempList = list()
 		
-		for question in questionList:
-			if question.getStudent == self.ePantherID
+		for q in questionList:
+			if q.getStudent == self._ePantherID:
 				tempList.append(question)
 				
 		self._questions = tempList
