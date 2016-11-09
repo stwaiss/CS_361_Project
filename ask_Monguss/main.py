@@ -24,6 +24,8 @@ from faq import FAQ
 from question import Question
 from timestamp import Timestamp
 from reply import Reply
+import time
+import datetime
 
 questionList = list()
 
@@ -104,7 +106,7 @@ class LoginHandler(webapp2.RequestHandler):
 class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
-        self.response.write(template.render())
+        self.response.write(template.render(questions=questionList))
 
 
 class StudentAskHandler(webapp2.RequestHandler):
@@ -113,19 +115,22 @@ class StudentAskHandler(webapp2.RequestHandler):
 		cs361 = Course("cs361")
 		user.addCourse("cs361")
 		cs361.addStudent(user)
-		cs361.addInstructor(Instructor("rock", "123abc"))
+		inst = list()
+		inst.append(Instructor("rock", "123abc"))
+		inst.append(Instructor("other", "543zyx"))
 		template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
-		self.response.write(template.render(user=user._ePantherID,course=user._courses,instructor=cs361._instructors))
+		self.response.write(template.render(user=user._ePantherID,course=user._courses,instructor=inst))
 
 	def post(self):
-		q = question()
-		q._body = self.request.get('textbox')
+		ts = time.time()
+		user = Student("jacksonj", "abc123")
+		q = Question(str(self.request.get('textbox')))
 		q._student = self.request.get('user')
 		q._instructor = self.request.get('instructor')
-		q._title = q.getBody[:10]
+		q.timestamp = datetime.datetime.fromtimestamp(ts).strftime('%m-%d-%Y')
 		
-		self.user.addQuestion(q)
-		self.user.postQuestionToGlobal()
+		user.addQuestion(q)
+		questionList.append(user.postQuestionToGlobal())
 	
 		self.redirect('/student')
 

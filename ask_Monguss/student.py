@@ -2,6 +2,7 @@ import unittest
 from person import Person
 from question import Question
 
+questionList = list()
 
 class Student(Person):
 	_courses = list()
@@ -22,7 +23,7 @@ class Student(Person):
 
     #forces courses list to only consist of course objects. Don't use student.courses[0] = ...
 	def addCourse(self, c):
-		for crs in _courses:
+		for crs in self._courses:
 			if c == crs:
 				return
 		self._courses.append(c)
@@ -47,14 +48,7 @@ class Student(Person):
 		self._questions = tempList
 				
 	def postQuestionToGlobal(self):
-		global questionList
-		
-		for Question in self._questions:
-			for I in questionList:
-				if Question.getTitle == I.getTitle:
-					continue
-				else:
-					questionList.append(Question)
+		return self._questions
 	
 
 class testStudent(unittest.TestCase):

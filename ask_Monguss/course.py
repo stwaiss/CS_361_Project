@@ -3,7 +3,6 @@ from question import Question
 from faq import FAQ
 from person import Person
 from student import Student
-from instructor import Instructor
 
 class Course(object):
     _students = list()

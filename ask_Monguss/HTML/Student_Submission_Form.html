@@ -29,7 +29,7 @@
 	<p>Select your instructor: <select name="instructor">
 			<option value="instructor">Instructor</option>
 			{% for i in instructor %}
-			<option value="{{i}}">{{i}}</option>
+			<option value="{{i._ePantherID}}">{{i._ePantherID}}</option>
 			{% endfor %}
 		</select> 
 	</p>
@@ -42,7 +42,7 @@
 		</select> 
 	</p>
 
-	<form>
+	<form method="POST">
 		<input type="hidden" value="{{ user }}">
 		<textarea name="textbox" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>	
 		<input type="submit">

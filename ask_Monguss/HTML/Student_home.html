@@ -23,16 +23,13 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% for q in questions %}
 					<tr>
-						<td>Why are we doing this?</td>
-						<td>Oct 10, 2016</td>
+						<td>{{ q._body }}</td>
+						<td>{{ q._timestamp }}</td>
 						<td>Unanswered</td>
 					</tr>
-					<tr>
-						<td>Did I do this right?</td>
-						<td>Oct 11, 2016</td>
-						<td><a href="#">Answered</a></td>
-					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>

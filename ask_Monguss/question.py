@@ -5,20 +5,17 @@ class Question(object):
     _body = ''
     _faqAttachments = list()
     _replies = list()
-    _timestamps = list()
+    _timestamp = ''
     _student = ''
     _instructor = ''
     _title = ''
     _status = ''
 
 
-    def __init__(self, body, faqAttachments):
+    def __init__(self, body):
         if not isinstance(body, types.StringType):
             raise TypeError("FAQ.question only accepts String Objects")
         self._body = body
-
-        #faqAttachments is a list of ints, representing the indexes of applicable faqs from Course.faq[]
-        self._faqAttachments = faqAttachments
 
         self._replies = list()
         self._timestamps = list()
