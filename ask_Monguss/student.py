@@ -1,6 +1,5 @@
 import unittest
 from person import Person
-from course import Course
 from question import Question
 
 
@@ -23,8 +22,9 @@ class Student(Person):
 
     #forces courses list to only consist of course objects. Don't use student.courses[0] = ...
 	def addCourse(self, c):
-		if not isinstance(c, Course):
-			raise TypeError("Student.questions only accepts Course Objects")
+		for crs in _courses:
+			if c == crs:
+				return
 		self._courses.append(c)
 
     #forces questions list to only consist of question objects. Don't use student.questions[0] = ...
