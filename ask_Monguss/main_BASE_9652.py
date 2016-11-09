@@ -29,7 +29,6 @@ questionList = list()
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-
 class MainHandler(webapp2.RequestHandler):
     def checkForMatch(self, username, password):
         # open text file
@@ -52,7 +51,6 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
         self.response.write(template.render())
-
 
 class LoginHandler(webapp2.RequestHandler):
     postedUsername = ""
@@ -83,71 +81,36 @@ class LoginHandler(webapp2.RequestHandler):
 
         self.match = self.checkForMatch(self.postedUsername, self.postedPassword)
 
-        if self.match == -1:
-            values = {
-                'credentials': self.match
-            }
 
-            template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
-            self.response.write(template.render(values))
-            return
-
-        elif self.match == 0:
-            self.redirect('/student')
-            return
-
-        elif self.match == 1:
-            self.redirect('/instructor')
-            return
+        values = {
+            'credentials': self.match,
+            'username': self.postedUsername,
+            'password': self.postedPassword
+        }
+        template = JINJA_ENVIRONMENT.get_template('HTML/login_dummy.html')
+        self.response.write(template.render(values))
 
 
-class StudentLandingPageHandler(webapp2.RequestHandler):
+class StudentLandingPage(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
         self.response.write(template.render())
 
-
-class StudentAskHandler(webapp2.RequestHandler):
-	user = student("jacksonj", "abc123")
-	cs361 = course("cs361")
-
-	def get(self):
-		user.addCourse(cs361)
-		cs361.addStudent(user)
-		cs361.addInstructor(instructor("jrock", "123abc")
-        template = JINJA_ENVIRONMENT.get_template('HTML/StudentSubmissionForm.html')
-        self.response.write(template.render('user'=user._ePantherID, 'course'=user._courses, 'instructor'=user._courses._instructors))
-
     def post(self):
-		q = question()
-		q._body = self.request.get('textbox')
-		q._student = self.request.get('user')
-		q._instructor = self.request.get('instructor')
-		q._title = q.getBody[:10]
-		
-		self.user.addQuestion(q)
-		self.user.postQuestionToGlobal()
-	
-		self.redirect('/student')
+        pass
 
-
-class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
-    def get(self):
-        template = JINJA_ENVIRONMENT.get_template('HTML/Student_View_All_Answers.html')
-        self.response.write(template.render())
-
-
-class InstructorLandingPageHandler(webapp2.RequestHandler):
+class InstructorLandingPage(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
         self.response.write(template.render())
 
+    def post(self):
+        pass
 
 class AccountCreationHandler(webapp2.RequestHandler):
     def get(self):
         #Render HTML
-        template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
-        self.response.write(template.render())
+        pass
 
     def post(self):
         pass
@@ -156,46 +119,27 @@ class AccountCreationHandler(webapp2.RequestHandler):
         #
         # type = self.request.get("type")
         #
+        #
         #open file
         #check file for matching user name
         #if matched, give error, if not, write to file
 
-        username=self.request.get('ePantherID')
-        password=self.request.get('password')
-        credential=self.request.get('credential')
+class StudentAskHandler(webbapp2.RequestHandler):
+	def get(self):
+		template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
+		self.response.write(template.render())
 
-        users=open('usernames.txt', 'r')
-
-        userAlreadyExists = 0
-        for line in users:
-            infoList = line.strip().split(',')
-
-            if infoList[0] == str(username):
-                userAlreadyExists = 1
-                values = {
-                    'userAlreadyExists': userAlreadyExists,
-                    'username': username
-                }
-                #Refresh and write error message
-                template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
-                self.response.write(template.render(values))
-                break
-
-        #### GAE does not support writing to local text files.
-        # if credential == "instructor":
-        #    users.write(username + ',' + password + ',1')
-        # elif credential == "student":
-        #    users.write(username + ',' + password + ',0')
-
-        users.close()
+	def post(self):
+		
+		
+		self.redirect('/student')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
-    ('/student', StudentLandingPageHandler),
-    ('/student/ask', StudentAskHandler),
-    ('/student/view_all', StudentViewAllQuestionsHandler),
-    ('/instructor', InstructorLandingPageHandler),
-    ('/instructor/create', AccountCreationHandler)
+    ('/student', StudentLandingPage),
+    ('/instructor', InstructorLandingPage),
+    ('/create', AccountCreationHandler),
+	('/ask', StudentAskHandler)
 
 ], debug=True)
