@@ -85,6 +85,8 @@ class LoginHandler(webapp2.RequestHandler):
                         return 0
                     elif infoList[2] == str(1):
                         return 1
+                    elif infoList[2] == str(2):
+                        return 2
         # if user is not matched, return -1
         return -1
 
@@ -111,6 +113,8 @@ class LoginHandler(webapp2.RequestHandler):
             self.redirect('/instructor')
             return
 
+        elif self.match == 2:
+            self.redirect('/ADMIN')
 
 class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
@@ -220,6 +224,13 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
         self.response.write(template.render(instructor = sampleInstructor))
 
+class ADMINHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/ADMIN.html')
+        self.response.write(template.render())
+
+    def post(self):
+        pass
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
@@ -230,6 +241,7 @@ app = webapp2.WSGIApplication([
     ('/student/view_all', StudentViewAllQuestionsHandler),
     ('/instructor', InstructorLandingPageHandler),
     ('/instructor/create', AccountCreationHandler),
-    ('/instructor/view_all', InstructorViewAllQuestionsHandler)
+    ('/instructor/view_all', InstructorViewAllQuestionsHandler),
+    ('/ADMIN', ADMINHandler)
 
 ], debug=True)
