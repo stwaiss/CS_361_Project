@@ -38,7 +38,8 @@ class Student(Person):
 		
 	def getQuestionsFromGlobal(self):
 		query = Question.query(Question._student = self._ePantherID)
-				
+		self._questions = query
+		
 		return query
 				
 	def postQuestionToGlobal(self):

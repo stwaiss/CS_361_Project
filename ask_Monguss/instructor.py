@@ -36,7 +36,8 @@ class Instructor(Person):
 		
 	def getQuestionsFromGlobal(self):
 		query = Question.query(Question._instructor = self._ePantherID)
-				
+		self._questions = query
+		
 		return query
 
 class testInstructor(unittest.TestCase):
