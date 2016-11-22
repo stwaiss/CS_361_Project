@@ -1,6 +1,7 @@
 import unittest
 from person import Person
 from question import Question
+from google.appengine.ext import ndb
 
 questionList = list()
 

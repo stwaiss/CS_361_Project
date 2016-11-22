@@ -2,6 +2,7 @@ import unittest
 from course import Course
 from person import Person
 from question import Question
+from google.appengine.ext import ndb
 
 class Instructor(Person):
     _courses = list()
