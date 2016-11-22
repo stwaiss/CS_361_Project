@@ -141,7 +141,7 @@ class StudentAskHandler(webapp2.RequestHandler):
             curStudent = students[0]
 
             values = {
-                'user': curStudent.ePantherID,
+                'username': curStudent.ePantherID,
                 'course': curStudent._courses,
                 #'instructor': curStudent.instructor
             }
@@ -188,7 +188,7 @@ class StudentFAQHandler(webapp2.RequestHandler):
                 "isInstructor": 0
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/FAQ.html')
-            self.response.write(template.render())
+            self.response.write(template.render(values))
 
         #else redirect to login page
         else:
@@ -208,7 +208,7 @@ class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
                 "username": curStudent.ePantherID,
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Student_View_All_Answers.html')
-            self.response.write(template.render())
+            self.response.write(template.render(values))
 
         # else redirect to login page
         else:
@@ -228,7 +228,7 @@ class InstructorLandingPageHandler(webapp2.RequestHandler):
                 "username": curInstructor.ePantherID,
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
-            self.response.write(template.render())
+            self.response.write(template.render(values))
 
         # else redirect to login page
         else:
@@ -248,7 +248,7 @@ class AccountCreationHandler(webapp2.RequestHandler):
                 "username": curInstructor.ePantherID,
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
-            self.response.write(template.render())
+            self.response.write(template.render(values))
 
         # else redirect to login page
         else:
@@ -335,9 +335,10 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
             curInstructor = instructors[0]
             values = {
                 "username": curInstructor.ePantherID,
+                "instructor": curInstructor
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
-            self.response.write(template.render())
+            self.response.write(template.render(values))
 
         # else redirect to login page
         else:
@@ -352,8 +353,10 @@ render_parameter['prev_answer'] = ''
 render_parameter_q = {}
 render_parameter_q['prev_q'] = ''
 
+
 class List(ndb.Model):
     qanda = ndb.StringProperty()
+
 
 class Faq(ndb.Model):
     question = ndb.StringProperty()
@@ -374,6 +377,7 @@ class FaqHandler(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('HTML/InstructorFAQ.html')
         self.response.write(template.render(render_parameter))
 
+
 class FaqAddHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/FAQadd.html')
@@ -392,6 +396,7 @@ class FaqAddHandler(webapp2.RequestHandler):
         render_parameter['prev_answer'] = answer
         self.response.write('<meta http-equiv="refresh" content="0.5;url=/instructor/faq">')
 
+
 class DeleteHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/FAQdelete.html')
@@ -407,6 +412,7 @@ class DeleteHandler(webapp2.RequestHandler):
         for q in faqs:
           q.key.delete()
         self.redirect('/instructor/faq')
+
 
 class ADMINHandler(webapp2.RequestHandler):
     def get(self):
