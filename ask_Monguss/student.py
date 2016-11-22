@@ -9,9 +9,6 @@ class Student(Person):
     _questions = list()
     _name = ''
 
-    def __init__(self, ePantherID, password):
-        super(Student, self).__init__(ePantherID, password, 0)
-
     def getCourseByName(self, name):
         for i in range(0, len(self._courses), 1):
             if self._courses[i].getName() == name:
@@ -37,7 +34,7 @@ class Student(Person):
         return i.get()
 
     def getQuestionsFromGlobal(self):
-        query = Question.query(Question._student == self._ePantherID)
+        query = Question.query(Question._student == self.ePantherID)
         return query
 
     def postQuestionToGlobal(self):

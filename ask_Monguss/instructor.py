@@ -7,9 +7,6 @@ class Instructor(Person):
     _courses = list()
     _questions = list()
 
-    def __init__(self, ePantherID, password):
-        super(Instructor, self).__init__(ePantherID, password, 1)
-
     # forces courses list to only consist of course objects. Don't use instructor.courses[0] = ...
     def addCourse(self, c):
         if not isinstance(c, Course):
@@ -35,7 +32,7 @@ class Instructor(Person):
         return i.get()
 
     def getQuestionsFromGlobal(self):
-        query = Question.query(Question._instructor == self._ePantherID)
+        query = Question.query(Question._instructor == self.ePantherID)
         return query
 
 class testInstructor(unittest.TestCase):

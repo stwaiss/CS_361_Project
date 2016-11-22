@@ -14,6 +14,14 @@
 </head>
 
 <body>
+	<div id="menubar">
+		<b>{{username}}</b> //
+		<a href="/student">Home</a> -
+		<a href="/student/faq">FAQ</a> -
+		<a href="/student/view_all">Questions</a> -
+		<a href="/student/ask">Submit a Question</a> -
+		<a href="/logout">Log Out</a>
+	</div>
 	<div id="content">
 		<h1>Frequently Asked Questions</h1>
 
@@ -65,12 +73,15 @@
 				</tr>
 			</tbody>
 		</table>
+
+		{% if isInstructor == 1 %}
 		<form action="FAQadd.html">
 			<input type="submit" value="Add">
 		</form>
 		<form action="FAQdelete.html">
 			<input type="submit" value="Delete">
 		</form>
+		{% endif %}
 	</div>
 
 
