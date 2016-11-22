@@ -32,7 +32,12 @@ class Instructor(Person):
         return self._courses[i]
 
     def getQuestion(self, i):
-        return self._questions[i]
+        return return i.get()
+		
+	def getQuestionsFromGlobal(self):
+		query = Question.query(Question._instructor = self._ePantherID)
+				
+		return query
 
 class testInstructor(unittest.TestCase):
     def testStudentInit(self):

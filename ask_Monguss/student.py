@@ -30,22 +30,16 @@ class Student(Person):
 
     #forces questions list to only consist of question objects. Don't use student.questions[0] = ...
 	def addQuestion(self, q):
-		if not isinstance(q, Question):
-			raise TypeError("Student.questions only accepts Question Objects")
-		self._questions.append(q)
+		key = q.put()
+		self._questions.append(key)
 
 	def getQuestion(self, i):
-		return self._questions[i]
+		return i.get()
 		
 	def getQuestionsFromGlobal(self):
-		global questionList
-		tempList = list()
-		
-		for q in questionList:
-			if q.getStudent == self._ePantherID:
-				tempList.append(question)
+		query = Question.query(Question._student = self._ePantherID)
 				
-		self._questions = tempList
+		return query
 				
 	def postQuestionToGlobal(self):
 		return self._questions

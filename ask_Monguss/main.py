@@ -126,19 +126,11 @@ class LoginHandler(BaseHandler):
 class StudentLandingPageHandler(BaseHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
-        self.response.write(template.render(questions=questionList))
+        self.response.write(template.render(questions=user.getQuestionsFromGlobal()))
 
 
 class StudentAskHandler(BaseHandler):
     def get(self):
-        user = Student("jacksonj", "abc123")
-        cs361 = Course("cs361")
-        user.addCourse("cs361")
-        cs361.addStudent(user)
-        inst = list()
-        inst.append(Instructor("rock", "123abc"))
-        inst.append(Instructor("other", "543zyx"))
-
         values = {
             'user':user._ePantherID,
             'course': user._courses,
@@ -149,15 +141,15 @@ class StudentAskHandler(BaseHandler):
         self.response.write(template.render(values))
 
     def post(self):
-        user = Student("jacksonj", "abc123")
         q = Question(str(self.request.get('textbox')))
         q._student = self.request.get('user')
         q._instructor = self.request.get('instructor')
-        q.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%m-%d-%Y')
+        q.timestamp = datetime.datetime.now().strftime('%m-%d-%Y')
 
         user.addQuestion(q)
-        questionList.append(q)
 
+		print "Question posted successfully. Redirecting..."
+		
         self.redirect('/student')
 
 
@@ -228,10 +220,9 @@ class AccountCreationHandler(BaseHandler):
 
 class InstructorViewAllQuestionsHandler(BaseHandler):
     def get(self):
-        global sampleInstructor
 
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
-        self.response.write(template.render(instructor = sampleInstructor))
+        self.response.write(template.render(instructor = user.getQuestionsFromGlobal()))
 
 
 class ADMINHandler(BaseHandler):
