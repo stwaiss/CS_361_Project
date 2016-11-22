@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<head>
+	<title> Frequently Asked Questions</title>
+
+	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
+	<style>
+		form{
+			display:inline;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="content">
+		<h1>Frequently Asked Questions</h1>
+
+		<p>For the most part, if you have a question, your peers have that same question too. The table below shows questions that your instructor frequently recieves, and wants to share with you and your peers. Please take a look through the table before submitting any questions, as your question may have already been answered!
+		</p>
+
+		<br>
+
+		<p> To return back to the Question Submission Form, click here: <a href="">Question Submission Form</a> </p> <br>
+
+		<div>
+		<table align="center">
+			<tr>
+				<th>Question</th>
+				<th>Answer</th>
+			</tr>
+
+			{% for q in faqs %}
+
+			<tr>
+				<td>{{ q.question }}</td>
+				<td>{{ q.answer }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	    <a id='add' href="/instructor/faq/faqadd">Add</a>
+        <a href="/instructor">Back</a>
+	    <!--<a id='delete' href="/instructor/faq/faqdelete">Delete</a>-->
+	</div>
+</body>
+
+</HTML>
