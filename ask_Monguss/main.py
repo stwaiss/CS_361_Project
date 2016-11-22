@@ -41,13 +41,7 @@ sampleCourse.addQuestion(Question("This is a default question."))
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 
-class BaseHandler(webapp2.RequestHandler):
-    #FAKE STUB
-    def thingy(self):
-        pass
-
-
-class MainHandler(BaseHandler):
+class MainHandler(webapp2.requestHandler):
     def checkForMatch(self, username, password):
         # open text file
         users = open('usernames.txt', 'r')
@@ -71,7 +65,7 @@ class MainHandler(BaseHandler):
         self.response.write(template.render())
 
 
-class LoginHandler(BaseHandler):
+class LoginHandler(webapp2.requestHandler):
     postedUsername = ""
     postedPassword = ""
     match = -1
@@ -112,28 +106,36 @@ class LoginHandler(BaseHandler):
             return
 
         elif self.match == 0:
+            self.response.set_cookie('name', self.postedUsername, path='/')
             self.redirect('/student')
             return
 
         elif self.match == 1:
+            self.response.set_cookie('name', self.postedUsername, path='/')
             self.redirect('/instructor')
             return
 
         elif self.match == 2:
+            self.response.set_cookie('name', self.postedUsername, path='/')
             self.redirect('/ADMIN')
+            return
 
 
-class StudentLandingPageHandler(BaseHandler):
+class StudentLandingPageHandler(webapp2.requestHandler):
     def get(self):
+        name = self.request.cookies.get("name")
+        self.request.query()
+
+
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
-        self.response.write(template.render(questions=user.getQuestionsFromGlobal()))
+        self.response.write(template.render(questions=self.user.getQuestionsFromGlobal()))
 
 
-class StudentAskHandler(BaseHandler):
+class StudentAskHandler(webapp2.requestHandler):
     def get(self):
         values = {
-            'user':user._ePantherID,
-            'course': user._courses,
+            'user':self.user._ePantherID,
+            'course': self.user._courses,
             'instructor': inst
         }
 
@@ -146,32 +148,32 @@ class StudentAskHandler(BaseHandler):
         q._instructor = self.request.get('instructor')
         q.timestamp = datetime.datetime.now().strftime('%m-%d-%Y')
 
-        user.addQuestion(q)
+        self.user.addQuestion(q)
 
-		print "Question posted successfully. Redirecting..."
+	    print "Question posted successfully. Redirecting..."
 		
         self.redirect('/student')
 
 
-class StudentFAQHandler(BaseHandler):
+class StudentFAQHandler(webapp2.requestHandler):
    def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/FAQ.html')
         self.response.write(template.render())
 
 
-class StudentViewAllQuestionsHandler(BaseHandler):
+class StudentViewAllQuestionsHandler(webapp2.requestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_View_All_Answers.html')
         self.response.write(template.render())
 
 
-class InstructorLandingPageHandler(BaseHandler):
+class InstructorLandingPageHandler(webapp2.requestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
         self.response.write(template.render())
 
 
-class AccountCreationHandler(BaseHandler):
+class AccountCreationHandler(webapp2.requestHandler):
     def get(self):
         #Render HTML
         template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
@@ -218,14 +220,14 @@ class AccountCreationHandler(BaseHandler):
         users.close()
 
 
-class InstructorViewAllQuestionsHandler(BaseHandler):
+class InstructorViewAllQuestionsHandler(webapp2.requestHandler):
     def get(self):
 
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
-        self.response.write(template.render(instructor = user.getQuestionsFromGlobal()))
+        self.response.write(template.render(instructor = self.user.getQuestionsFromGlobal()))
 
 
-class ADMINHandler(BaseHandler):
+class ADMINHandler(webapp2.requestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/ADMIN.html')
         self.response.write(template.render())
