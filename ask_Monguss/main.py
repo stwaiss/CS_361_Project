@@ -35,11 +35,14 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         student = Student.query(Student.ePantherID == "janedoe").fetch()
         if len(student) == 0:
-            janedoe = Student(ePantherID="janedoe", password="abc123", isInstructor=0)
-            jrock = Instructor(ePantherID="jrock", password="123abc", isInstructor=1)
+            course = Course(name="cs361").put()
 
-            janedoe.put()
-            jrock.put()
+            janedoe = Student(ePantherID="janedoe", password="abc123", isInstructor=0).put()
+            jrock = Instructor(ePantherID="jrock", password="123abc", isInstructor=1).put()
+
+            janedoe.put(course.students)
+            jrock.put(course.instructor)
+
         template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
         self.response.write(template.render())
 
@@ -344,6 +347,25 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
         else:
             self.redirect('/')
 
+    def post(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            curInstructor = instructors[0]
+            self.request.get('option')
+            values = {
+                "username": curInstructor.ePantherID,
+                "instructor": curInstructor
+            }
+            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
+            self.response.write(template.render(values))
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
 
 # FAQ add question/ delete question
 render_parameter = {}
@@ -420,9 +442,11 @@ class ADMINHandler(webapp2.RequestHandler):
         name = self.request.cookies.get("name")
         # if cookie is correct, render page
         if name == "ADMIN":
-            numberOfStudents = 1
-            numberOfInstructors = 1
-            numberOfCourses = 2
+
+
+            numberOfStudents = Student.query().count()
+            numberOfInstructors = Instructor.query().count()
+            numberOfCourses = Course.query().count()
             studentInstructorRatio = numberOfStudents / numberOfInstructors
 
             values = {
@@ -442,16 +466,16 @@ class ADMINHandler(webapp2.RequestHandler):
 
 
 
-        numberOfStudents = 1
-        numberOfInstructors = 1
-        numberOfCourses = 2
+        numberOfStudents = Student.query().count()
+        numberOfInstructors = Instructor.query().count()
+        numberOfCourses = Course.query().count()
         studentInstructorRatio = numberOfStudents/numberOfInstructors
 
 
         values = {
-            "numberOfStudents":numberOfStudents,
-            "numberOfInstructors": numberOfInstructors,
-            "numberOfCourses": numberOfCourses,
+            "students": numberOfStudents,
+            "instructors": numberOfInstructors,
+            "courses": numberOfCourses,
             "studentInstructorRatio":studentInstructorRatio
         }
 

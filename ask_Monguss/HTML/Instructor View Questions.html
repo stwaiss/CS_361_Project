@@ -14,8 +14,20 @@
 	</div>
 
 	<div id="content">
-		{% for course in instructor._courses %}
-			<h2>{{ course._courseName }}</h2>
+		<h1>View your course's questions</h1>
+		Pick a Course
+		<select>
+		{% for c in instructor.courses %}
+			<option value="{{c.name}}">{{c.name}}</option>
+		{% endfor %}
+		</select>
+
+		<form action="/instructor/view_all" method="post">
+			<input type="submit" value="Update">
+		</form>
+
+		{% for course in instructor.courses %}
+			<h2>{{ course.name }}</h2>
 			<table width="100%">
 					<thead>
 						<tr>

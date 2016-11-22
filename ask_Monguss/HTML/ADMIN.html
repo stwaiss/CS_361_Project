@@ -14,6 +14,7 @@
         <center>
             <h1>Welcome Administrator</h1>
             <h2>Status: Currently Online</h2>
+
             <h3 align="center">Test Case Statuses</h3>
             <table>
                 <th>
@@ -43,12 +44,49 @@
 
                 <tr>
                     <td>
+                        testViewQuestions_StudentSide
+                    </td>
+                    <td style="background-color:red">
+                        FAIL
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        testViewQuestions_InstructorSide
+                    </td>
+                    <td style="background-color:red">
+                        FAIL
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        testCountUnanswered
+                    </td>
+                    <td style="background-color:red">
+                        FAIL
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        testCheckAnswered
+                    </td>
+                    <td style="background-color:red">
+                        FAIL
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
                         testDeleteFAQItem
                     </td>
                     <td style="background-color:red">
                         FAIL
                     </td>
                 </tr>
+
 
 
             </table>
@@ -70,7 +108,7 @@
                         Number of Students
                     </td>
                     <td>
-                        {{numberOfStudents}}
+                        {{students}}
                     </td>
                 </tr>
 
@@ -79,7 +117,7 @@
                         Number of Instructors
                     </td>
                     <td>
-                        {{numberOfInstructors}}
+                        {{instructors}}
                     </td>
                 </tr>
 
@@ -88,7 +126,7 @@
                         Number of Courses
                     </td>
                     <td>
-                        {{numberOfCourses}}
+                        {{courses}}
                     </td>
                 </tr>
 
