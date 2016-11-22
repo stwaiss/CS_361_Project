@@ -1,15 +1,22 @@
-<!DOCTYPE HTML>
-        <HTML>
-            <head>
-                <title >
-                    addFAQ
-                </title>
-            </head>
-        <body>
-        <form action="FAQ.html" method="get">
-            Question: <br><textarea name="Qtextbox" cols="50" rows="5" placeholder="Post Question"></textarea> <br>
-            Answer: <br><textarea name="Atextbox" cols="50" rows="5" placeholder="Post Answer"></textarea> <br>
-            <input type="submit" value="Add">
-        </form>
-        </body>
-</HTML>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FAQ</title>
+
+</head>
+<body>
+	<form method="POST" action='/instructor/faq/faqadd'>
+		<table>
+			<tr>
+				<td>Question:</td>
+				<td><input type='text' name='question' value='{{prev_question}}'/></td>
+			</tr>
+			<tr>
+				<td>Answer:</td>
+				<td> <input type='text' name='answer' value='{{prev_answer}}'/> </td>
+			</tr>
+		</table>
+		<input type='submit' value='Add' />
+	</form>
+ </body>
+</html>
