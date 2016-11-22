@@ -26,6 +26,7 @@ from timestamp import Timestamp
 from reply import Reply
 import time
 import datetime
+from google.appengine.ext import ndb
 
 questionList = list()
 
@@ -236,6 +237,71 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
         self.response.write(template.render(instructor = self.user.getQuestionsFromGlobal()))
 
 
+
+# FAQ add question/ delete question
+render_parameter = {}
+render_parameter['prev_question'] = ''
+render_parameter['prev_answer'] = ''
+
+render_parameter_q = {}
+render_parameter_q['prev_q'] = ''
+
+class List(ndb.Model):
+    qanda = ndb.StringProperty()
+
+class Faq(ndb.Model):
+    question = ndb.StringProperty()
+    answer = ndb.StringProperty()
+    ts = ndb.DateTimeProperty(auto_now_add=True)
+    lists = ndb.StructuredProperty(List, repeated=True)
+
+    def add_item(self, item):
+        self.lists.append(item)
+        self.put()
+
+
+class FaqHandler(webapp2.RequestHandler):
+    def get(self):
+        faqs = list(Faq.query().order(Faq.ts))
+        render_parameter = {}
+        render_parameter['faqs'] = faqs
+        template = JINJA_ENVIRONMENT.get_template('HTML/InstructorFAQ.html')
+        self.response.write(template.render(render_parameter))
+
+class FaqAddHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/FAQadd.html')
+        output = template.render(render_parameter)
+        self.response.write(output)
+        render_parameter['prev_question'] = ''
+        render_parameter['prev_answer'] = ''
+
+    def post(self):
+        question = self.request.get('question')
+
+        answer = self.request.get('answer')
+        faq = Faq(question=question, answer=answer)
+        faq.put()
+        render_parameter['prev_question'] = question
+        render_parameter['prev_answer'] = answer
+        self.response.write('<meta http-equiv="refresh" content="0.5;url=/instructor/faq">')
+
+class DeleteHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/FAQdelete.html')
+        faqs = Faq.query().fetch(projection=[Faq.question])
+        render_parameter_q['faqs'] = faqs
+        self.response.write(template.render(render_parameter_q))
+        render_parameter_q['prev_q'] = ''
+
+    def post(self):
+        question = self.request.get('question')
+        faqs = list(Faq.query().fetch())
+        render_parameter_q['prev_q'] = question
+        for q in faqs:
+          q.key.delete()
+        self.redirect('/instructor/faq')
+
 class ADMINHandler(webapp2.RequestHandler):
     def get(self):
         numberOfStudents = len(Student.query())
@@ -268,6 +334,9 @@ app = webapp2.WSGIApplication([
     ('/instructor', InstructorLandingPageHandler),
     ('/instructor/create', AccountCreationHandler),
     ('/instructor/view_all', InstructorViewAllQuestionsHandler),
+    ('/instructor/faq', FaqHandler),
+    ('/instructor/faq/faqadd', FaqAddHandler),
+    ('/instructor/faq/faqdelete', DeleteHandler),
     ('/ADMIN', ADMINHandler)
 
 ], debug=True)
