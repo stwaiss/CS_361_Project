@@ -121,10 +121,21 @@ class LoginHandler(webapp2.requestHandler):
             return
 
 
+class LogoutHandler(webapp2.requestHandler):
+    def get(self):
+        name = self.request.cookies.get("name")
+        self.response.delete_cookie(name)
+        value = {
+            'username':name
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('HTML/logout.html')
+        self.response.write(template.render(value))
+
+
 class StudentLandingPageHandler(webapp2.requestHandler):
     def get(self):
         name = self.request.cookies.get("name")
-        self.request.query()
 
 
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
@@ -238,6 +249,7 @@ class ADMINHandler(webapp2.requestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
+    ('/logout', LogoutHandler)
     ('/student', StudentLandingPageHandler),
     ('/student/ask', StudentAskHandler),
     ('/student/faq', StudentFAQHandler),
