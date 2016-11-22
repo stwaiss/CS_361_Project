@@ -4,11 +4,27 @@
                 <title >
                     deleteFAQ
                 </title>
+
+                <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+	        	<link rel="stylesheet" type="text/css" href="../CSS/ePantherID_Log-in.css">
+
             </head>
         <body>
-        <select name="" id="">
-            <option value="" disabled="disabled" selected="selected">Choose FAQ to Delete</option>
-        </select>
-            <br> <input type="submit" value="Delete">
+            <form id ='deleteForm' method = 'POST' action = "/instructor/faq/faqdelete">
+                <select name="question" form="my_form">
+
+                    <option value="">Choose FAQ to Delete</option>
+                    {% for q in faqs %}
+                    <option value='{{ q.question }}'
+                    {% if q.question == prev_q %}
+                    selected='selected'
+                    {% endif %}
+                    > {{ q.question }}</option>
+                    {% endfor %}
+
+                </select>
+
+                <br> <input type="submit" value='Remove'>
+            </form>
         </body>
 </HTML>
