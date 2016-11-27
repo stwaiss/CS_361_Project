@@ -1,16 +1,18 @@
 <html>
 	<head>
 		<title>Instructor Home</title>
-		<link rel="stylesheet" href="../CSS/layout.css">
+		<link rel="stylesheet" type="text/css" href="../CSS/layout.css">
 		<link rel="stylesheet" type="text/css" href="../CSS/main.css">
 	</head>
 
 	<body>
 		<div id="menubar">
-			<b>Namey McNameface</b> //
+			<b>{{username}}</b> //
 			<a href="/instructor">Home</a> -
 			<a href="/instructor/view_all">Questions</a> -
-			<a href="/instructor/create">Create new users</a>
+			<a href="/instructor/faq">FAQ</a> -
+			<a href="/instructor/create">Create New Users</a> -
+			<a href="/logout">Log Out</a>
 		</div>
 
 		<div id="content">
@@ -42,10 +44,6 @@
 							</tr>
 						</tbody>
 					</table>
-					<center> <form method="get" action="/instructor/view_all">
-						<input type="submit" value="View Questions" />
-					</form> </center>
-
 					<br/>
 
 					Oldest Unanswered Question is from: Sept 12, 2016.
@@ -53,9 +51,6 @@
 					Newest Unanswered Question is from: Oct 12, 2016.
 				</div>
 			</div>
-			<center> <form method="get" action="/student">
-				<input type="submit" value="Switch to Student" />
-			</form> </center>
 		</div>
 
 	</body>

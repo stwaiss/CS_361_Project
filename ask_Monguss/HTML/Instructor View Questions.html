@@ -5,42 +5,53 @@
 </head>
 <body>
 
-<div id="menubar">
-	<b>Namey McNameface</b> //
-	<a href="/instructor">Home</a> -
-	<a href="/instructor/view_all">Questions</a> -
-	<a href="/instructor/create">Create new users</a>
-</div>
+	<div id="menubar">
+		<b>{{username}}</b> //
+		<a href="/instructor">Home</a> -
+		<a href="/instructor/view_all">Questions</a> -
+		<a href="/instructor/faq">FAQ</a> -
+		<a href="/instructor/create">Create New Users</a> -
+		<a href="/logout">Log Out</a>
+	</div>
 
-<div id="content">
-	{% for course in instructor._courses %}
-		<h2>{{ course._courseName }}</h2>
-		<table width="100%">
-				<thead>
-					<tr>
-						<th>Question</th>
-						<th>Submitted by</th>
-						<th>Date</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for question in course._questions %}
+	<div id="content">
+		<h1>View your course's questions</h1>
+		Pick a Course
+		<select>
+		{% for c in instructor.courses %}
+			<option value="{{c.name}}">{{c.name}}</option>
+		{% endfor %}
+		</select>
+
+		<form action="/instructor/view_all" method="post">
+			<input type="submit" value="Update">
+		</form>
+
+		{% for course in instructor.courses %}
+			<h2>{{ course.name }}</h2>
+			<table width="100%">
+					<thead>
 						<tr>
-							<td> <b> {{ question.getBody() }} </b> </td>
-							<td> {{ question._student }} </td>
-							<td> {{ question._timestamps[0] }} </td>
+							<th>Question</th>
+							<th>Submitted by</th>
+							<th>Date</th>
 						</tr>
-						<tr>
-							<td colspan="3"> {{ question.answer }} </td>
-						</tr>
-					{% endfor %}
-				</tbody>
-		</table>
-		<br />
-	{% endfor %}
-	<form method="get" action="/instructor">
-		<input type="submit" value="Back to Instructor Landing Page" />
-	</form>
-</div>
+					</thead>
+					<tbody>
+						{% for question in course._questions %}
+							<tr>
+								<td> <b> {{ question.getBody() }} </b> </td>
+								<td> {{ question._student }} </td>
+								<td> {{ question._timestamps[0] }} </td>
+							</tr>
+							<tr>
+								<td colspan="3"> {{ question.answer }} </td>
+							</tr>
+						{% endfor %}
+					</tbody>
+			</table>
+			<br />
+		{% endfor %}
+	</div>
 </body>
 </html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Creation Successful</title>
+    <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+</head>
+
+<body>
+    <div id="content">
+        {% if isInstructor == 1 %}
+        <h1>Instructor, {{username}}, with password, {{password}}, has been successfully created </h1>
+        {% elif isInstructor == 0 %}
+        <h1>Student, {{username}}, with password, {{password}}, has been successfully created </h1>
+        {% endif %}
+
+        <form action="/instructor/create" method="get">
+            <input type="submit" value="Back">
+        </form>
+    </div>
+</body>
+</html>
