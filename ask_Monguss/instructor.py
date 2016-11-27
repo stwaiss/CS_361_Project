@@ -2,7 +2,6 @@ import unittest
 from course import Course
 from person import Person
 from question import Question
-from google.appengine.ext import ndb
 
 class Instructor(Person):
     _courses = list()
@@ -33,13 +32,11 @@ class Instructor(Person):
         return self._courses[i]
 
     def getQuestion(self, i):
-        return return i.get()
-		
-	def getQuestionsFromGlobal(self):
-		query = Question.query(Question._instructor = self._ePantherID)
-		self._questions = query
-		
-		return query
+        return i.get()
+
+    def getQuestionsFromGlobal(self):
+        query = Question.query(Question._instructor == self._ePantherID)
+        return query
 
 class testInstructor(unittest.TestCase):
     def testStudentInit(self):

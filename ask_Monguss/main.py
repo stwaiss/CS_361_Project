@@ -26,6 +26,7 @@ from timestamp import Timestamp
 from reply import Reply
 import time
 import datetime
+from google.appengine.ext import ndb
 
 questionList = list()
 
@@ -41,7 +42,7 @@ sampleCourse.addQuestion(Question("This is a default question."))
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 
-class MainHandler(webapp2.requestHandler):
+class MainHandler(webapp2.RequestHandler):
     def checkForMatch(self, username, password):
         # open text file
         users = open('usernames.txt', 'r')
@@ -65,7 +66,7 @@ class MainHandler(webapp2.requestHandler):
         self.response.write(template.render())
 
 
-class LoginHandler(webapp2.requestHandler):
+class LoginHandler(webapp2.RequestHandler):
     postedUsername = ""
     postedPassword = ""
     match = -1
@@ -121,7 +122,7 @@ class LoginHandler(webapp2.requestHandler):
             return
 
 
-class LogoutHandler(webapp2.requestHandler):
+class LogoutHandler(webapp2.RequestHandler):
     def get(self):
         name = self.request.cookies.get("name")
         self.response.delete_cookie(name)
@@ -133,7 +134,7 @@ class LogoutHandler(webapp2.requestHandler):
         self.response.write(template.render(value))
 
 
-class StudentLandingPageHandler(webapp2.requestHandler):
+class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         name = self.request.cookies.get("name")
 
@@ -142,12 +143,12 @@ class StudentLandingPageHandler(webapp2.requestHandler):
         self.response.write(template.render(questions=self.user.getQuestionsFromGlobal()))
 
 
-class StudentAskHandler(webapp2.requestHandler):
+class StudentAskHandler(webapp2.RequestHandler):
     def get(self):
         values = {
             'user':self.user._ePantherID,
             'course': self.user._courses,
-            'instructor': inst
+            'instructor': self.instructor
         }
 
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
@@ -160,31 +161,29 @@ class StudentAskHandler(webapp2.requestHandler):
         q.timestamp = datetime.datetime.now().strftime('%m-%d-%Y')
 
         self.user.addQuestion(q)
-
-	    print "Question posted successfully. Redirecting..."
-		
+        print "Question posted successfully. Redirecting..."
         self.redirect('/student')
 
 
-class StudentFAQHandler(webapp2.requestHandler):
+class StudentFAQHandler(webapp2.RequestHandler):
    def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/FAQ.html')
         self.response.write(template.render())
 
 
-class StudentViewAllQuestionsHandler(webapp2.requestHandler):
+class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Student_View_All_Answers.html')
         self.response.write(template.render())
 
 
-class InstructorLandingPageHandler(webapp2.requestHandler):
+class InstructorLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
         self.response.write(template.render())
 
 
-class AccountCreationHandler(webapp2.requestHandler):
+class AccountCreationHandler(webapp2.RequestHandler):
     def get(self):
         #Render HTML
         template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
@@ -231,17 +230,95 @@ class AccountCreationHandler(webapp2.requestHandler):
         users.close()
 
 
-class InstructorViewAllQuestionsHandler(webapp2.requestHandler):
+class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
 
         template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
         self.response.write(template.render(instructor = self.user.getQuestionsFromGlobal()))
 
 
-class ADMINHandler(webapp2.requestHandler):
+
+# FAQ add question/ delete question
+render_parameter = {}
+render_parameter['prev_question'] = ''
+render_parameter['prev_answer'] = ''
+
+render_parameter_q = {}
+render_parameter_q['prev_q'] = ''
+
+class List(ndb.Model):
+    qanda = ndb.StringProperty()
+
+class Faq(ndb.Model):
+    question = ndb.StringProperty()
+    answer = ndb.StringProperty()
+    ts = ndb.DateTimeProperty(auto_now_add=True)
+    lists = ndb.StructuredProperty(List, repeated=True)
+
+    def add_item(self, item):
+        self.lists.append(item)
+        self.put()
+
+
+class FaqHandler(webapp2.RequestHandler):
     def get(self):
+        faqs = list(Faq.query().order(Faq.ts))
+        render_parameter = {}
+        render_parameter['faqs'] = faqs
+        template = JINJA_ENVIRONMENT.get_template('HTML/InstructorFAQ.html')
+        self.response.write(template.render(render_parameter))
+
+class FaqAddHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/FAQadd.html')
+        output = template.render(render_parameter)
+        self.response.write(output)
+        render_parameter['prev_question'] = ''
+        render_parameter['prev_answer'] = ''
+
+    def post(self):
+        question = self.request.get('question')
+
+        answer = self.request.get('answer')
+        faq = Faq(question=question, answer=answer)
+        faq.put()
+        render_parameter['prev_question'] = question
+        render_parameter['prev_answer'] = answer
+        self.response.write('<meta http-equiv="refresh" content="0.5;url=/instructor/faq">')
+
+class DeleteHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/FAQdelete.html')
+        faqs = Faq.query().fetch(projection=[Faq.question])
+        render_parameter_q['faqs'] = faqs
+        self.response.write(template.render(render_parameter_q))
+        render_parameter_q['prev_q'] = ''
+
+    def post(self):
+        question = self.request.get('question')
+        faqs = list(Faq.query().fetch())
+        render_parameter_q['prev_q'] = question
+        for q in faqs:
+          q.key.delete()
+        self.redirect('/instructor/faq')
+
+class ADMINHandler(webapp2.RequestHandler):
+    def get(self):
+        numberOfStudents = len(Student.query())
+        numberOfInstructors = len(Instructor.query())
+        numberOfCourses = len(Course.query())
+        studentInstructorRatio = numberOfStudents/numberOfInstructors
+
+
+        values = {
+            "numberOfStudents":numberOfStudents,
+            "numberOfInstructors": numberOfInstructors,
+            "numberOfCourses": numberOfCourses,
+            "studentInstructorRatio":studentInstructorRatio
+        }
+
         template = JINJA_ENVIRONMENT.get_template('HTML/ADMIN.html')
-        self.response.write(template.render())
+        self.response.write(template.render(values))
 
     def post(self):
         pass
@@ -249,7 +326,7 @@ class ADMINHandler(webapp2.requestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
-    ('/logout', LogoutHandler)
+    ('/logout', LogoutHandler),
     ('/student', StudentLandingPageHandler),
     ('/student/ask', StudentAskHandler),
     ('/student/faq', StudentFAQHandler),
@@ -257,6 +334,9 @@ app = webapp2.WSGIApplication([
     ('/instructor', InstructorLandingPageHandler),
     ('/instructor/create', AccountCreationHandler),
     ('/instructor/view_all', InstructorViewAllQuestionsHandler),
+    ('/instructor/faq', FaqHandler),
+    ('/instructor/faq/faqadd', FaqAddHandler),
+    ('/instructor/faq/faqdelete', DeleteHandler),
     ('/ADMIN', ADMINHandler)
 
 ], debug=True)

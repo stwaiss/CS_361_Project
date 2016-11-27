@@ -1,51 +1,48 @@
 import unittest
 from person import Person
 from question import Question
-from google.appengine.ext import ndb
 
 questionList = list()
 
 class Student(Person):
-	_courses = list()
-	_questions = list()
-	_name = ''
+    _courses = list()
+    _questions = list()
+    _name = ''
 
-	def __init__(self, ePantherID, password):
-		super(Student, self).__init__(ePantherID, password, 0)
+    def __init__(self, ePantherID, password):
+        super(Student, self).__init__(ePantherID, password, 0)
 
-	def getCourseByName(self, name):
-		for i in range(0, len(self._courses), 1):
-			if self._courses[i].getName() == name:
-				return self._courses[i]
-		return -1
+    def getCourseByName(self, name):
+        for i in range(0, len(self._courses), 1):
+            if self._courses[i].getName() == name:
+                return self._courses[i]
+            return -1
 
-	def getCourseByIndex(self, i):
-		return self._courses[i]
+    def getCourseByIndex(self, i):
+        return self._courses[i]
 
     #forces courses list to only consist of course objects. Don't use student.courses[0] = ...
-	def addCourse(self, c):
-		for crs in self._courses:
-			if c == crs:
-				return
-		self._courses.append(c)
+    def addCourse(self, c):
+        for crs in self._courses:
+            if c == crs:
+                return
+        self._courses.append(c)
 
     #forces questions list to only consist of question objects. Don't use student.questions[0] = ...
-	def addQuestion(self, q):
-		key = q.put()
-		self._questions.append(key)
+    def addQuestion(self, q):
+        key = q.put()
+        self._questions.append(key)
 
-	def getQuestion(self, i):
-		return i.get()
-		
-	def getQuestionsFromGlobal(self):
-		query = Question.query(Question._student = self._ePantherID)
-		self._questions = query
-		
-		return query
-				
-	def postQuestionToGlobal(self):
-		return self._questions
-	
+    def getQuestion(self, i):
+        return i.get()
+
+    def getQuestionsFromGlobal(self):
+        query = Question.query(Question._student == self._ePantherID)
+        return query
+
+    def postQuestionToGlobal(self):
+        return self._questions
+
 
 class testStudent(unittest.TestCase):
     def testStudentInit(self):

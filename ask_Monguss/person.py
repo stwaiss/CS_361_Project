@@ -1,7 +1,7 @@
 import types
+from google.appengine.ext import ndb
 
-
-class Person(object):
+class Person(ndb.Model):
     _ePantherID = ''
     _password = ''
 
