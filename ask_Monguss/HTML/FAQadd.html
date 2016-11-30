@@ -2,22 +2,20 @@
 <html>
 <head>
 	<title>FAQ</title>
-    <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
 </head>
 
 <body>
 	<div id="content">
 		<form method="POST" action='/instructor/faq/faqadd'>
-			<table>
-				<tr>
-					<td>Question:</td>
-					<td><input type='text' name='question' value='{{prev_question}}'/></td>
-				</tr>
-				<tr>
-					<td>Answer:</td>
-					<td> <input type='text' name='answer' value='{{prev_answer}}'/> </td>
-				</tr>
-			</table>
+			<label>Question: </label>
+			<input type='text' name='question'>
+
+			<br>
+
+			<label>Answer:</label>
+			<input type='text' name='answer'>
+
 			<input type='submit' value='Add'/>
 		</form>
 	</div>

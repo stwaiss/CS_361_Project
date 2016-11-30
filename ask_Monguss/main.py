@@ -103,10 +103,9 @@ class LoginHandler(webapp2.RequestHandler):
 
 class LogoutHandler(webapp2.RequestHandler):
     def get(self):
-        name = self.request.cookies.get("name")
-        self.response.delete_cookie(name)
+        self.response.delete_cookie('name')
         value = {
-            'username':name
+            'username': self.request.cookies.get('name')
         }
 
         template = JINJA_ENVIRONMENT.get_template('HTML/logout.html')
@@ -367,73 +366,75 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
         else:
             self.redirect('/')
 
-# FAQ add question/ delete question
-render_parameter = {}
-render_parameter['prev_question'] = ''
-render_parameter['prev_answer'] = ''
 
-render_parameter_q = {}
-render_parameter_q['prev_q'] = ''
-
-
-class List(ndb.Model):
-    qanda = ndb.StringProperty()
-
-
-class Faq(ndb.Model):
-    question = ndb.StringProperty()
-    answer = ndb.StringProperty()
-    ts = ndb.DateTimeProperty(auto_now_add=True)
-    lists = ndb.StructuredProperty(List, repeated=True)
-
-    def add_item(self, item):
-        self.lists.append(item)
-        self.put()
-
-
-class FaqHandler(webapp2.RequestHandler):
+class InstructorFaqHandler(webapp2.RequestHandler):
     def get(self):
-        faqs = list(Faq.query().order(Faq.ts))
-        render_parameter = {}
-        render_parameter['faqs'] = faqs
-        template = JINJA_ENVIRONMENT.get_template('HTML/InstructorFAQ.html')
-        self.response.write(template.render(render_parameter))
+        name = self.request.cookies.get("name")
+        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            curInstructor = instructors[0]
+            faqs = list(FAQ.query().order(FAQ.ts))
+            values = {
+                "username": curInstructor.ePantherID,
+                "faqs": faqs
+            }
+            faqs = list(FAQ.query().order(FAQ.ts))
+
+            template = JINJA_ENVIRONMENT.get_template('HTML/InstructorFAQ.html')
+            self.response.write(template.render(values))
 
 
-class FaqAddHandler(webapp2.RequestHandler):
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+
+class InstructorFaqAddHandler(webapp2.RequestHandler):
     def get(self):
-        template = JINJA_ENVIRONMENT.get_template('HTML/FAQadd.html')
-        output = template.render(render_parameter)
-        self.response.write(output)
-        render_parameter['prev_question'] = ''
-        render_parameter['prev_answer'] = ''
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            curInstructor = instructors[0]
+            values = {
+                "username": curInstructor.ePantherID,
+            }
+            template = JINJA_ENVIRONMENT.get_template('HTML/FAQadd.html')
+            self.response.write(template.render(values))
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
 
     def post(self):
-        question = self.request.get('question')
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
 
-        answer = self.request.get('answer')
-        faq = Faq(question=question, answer=answer)
-        faq.put()
-        render_parameter['prev_question'] = question
-        render_parameter['prev_answer'] = answer
-        self.response.write('<meta http-equiv="refresh" content="0.5;url=/instructor/faq">')
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            question = self.request.get('question')
+
+            answer = self.request.get('answer')
+            faq = FAQ(question=question, answer=answer)
+            faq.put()
+            self.response.write('<meta http-equiv="refresh" content="0.5;url=/instructor/faq">')
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
 
 
-class DeleteHandler(webapp2.RequestHandler):
+class InstructorDeleteHandler(webapp2.RequestHandler):
     def get(self):
-        template = JINJA_ENVIRONMENT.get_template('HTML/FAQdelete.html')
-        faqs = Faq.query().fetch(projection=[Faq.question])
-        render_parameter_q['faqs'] = faqs
-        self.response.write(template.render(render_parameter_q))
-        render_parameter_q['prev_q'] = ''
+        pass
 
     def post(self):
-        question = self.request.get('question')
-        faqs = list(Faq.query().fetch())
-        render_parameter_q['prev_q'] = question
-        for q in faqs:
-          q.key.delete()
-        self.redirect('/instructor/faq')
+        pass
 
 
 class ADMINHandler(webapp2.RequestHandler):
@@ -496,9 +497,9 @@ app = webapp2.WSGIApplication([
     ('/instructor', InstructorLandingPageHandler),
     ('/instructor/create', AccountCreationHandler),
     ('/instructor/view_all', InstructorViewAllQuestionsHandler),
-    ('/instructor/faq', FaqHandler),
-    ('/instructor/faq/faqadd', FaqAddHandler),
-    ('/instructor/faq/faqdelete', DeleteHandler),
+    ('/instructor/faq', InstructorFaqHandler),
+    ('/instructor/faq/faqadd', InstructorFaqAddHandler),
+    ('/instructor/faq/faqdelete', InstructorDeleteHandler),
     ('/ADMIN', ADMINHandler)
 
 ], debug=True)
