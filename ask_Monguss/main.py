@@ -17,8 +17,7 @@
 import webapp2
 import jinja2
 import os
-from student import Student
-from instructor import Instructor
+from user import User
 from course import Course
 from faq import FAQ
 from question import Question
@@ -33,15 +32,12 @@ JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.di
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        student = Student.query(Student.ePantherID == "janedoe").fetch()
+        student = User.query(User.ePantherID == "janedoe").fetch()
         if len(student) == 0:
             course = Course(name="cs361").put()
 
-            janedoe = Student(ePantherID="janedoe", password="abc123", isInstructor=0).put()
-            jrock = Instructor(ePantherID="jrock", password="123abc", isInstructor=1).put()
-
-            janedoe.put(course.students)
-            jrock.put(course.instructor)
+            janedoe = User(ePantherID="janedoe", password="janedoe", isInstructor=0).put()
+            jrock = User(ePantherID="jrock", password="jrock", isInstructor=1).put()
 
         template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
         self.response.write(template.render())
@@ -54,13 +50,13 @@ class LoginHandler(webapp2.RequestHandler):
 
     def checkForMatch(self, username, password):
         # pull all students and check
-        students = Student.query(Student.ePantherID == username).fetch()
+        students = User.query(User.ePantherID == username).fetch()
         for s in students:
             if s.password == password:
                 return 0
 
         # pull all instructors and check
-        instructors = Instructor.query(Instructor.ePantherID == username).fetch()
+        instructors = User.query(User.ePantherID == username).fetch()
         for i in instructors:
             if i.password == password:
                 return 1
@@ -116,7 +112,7 @@ class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         #check for correct cookie
         name = self.request.cookies.get("name")
-        students = Student.query(Student.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name).fetch()
 
         #if cookie is correct, render page
         if len(students) != 0:
@@ -136,7 +132,7 @@ class StudentAskHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        students = Student.query(Student.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name).fetch()
 
         # if cookie is correct, render page
         if len(students) != 0:
@@ -144,7 +140,7 @@ class StudentAskHandler(webapp2.RequestHandler):
 
             values = {
                 'username': curStudent.ePantherID,
-                'course': curStudent._courses,
+                'course': curStudent.courses,
                 #'instructor': curStudent.instructor
             }
 
@@ -158,7 +154,7 @@ class StudentAskHandler(webapp2.RequestHandler):
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        students = Student.query(Student.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name).fetch()
 
         # if cookie is correct, render page
         if len(students) != 0:
@@ -180,7 +176,7 @@ class StudentFAQHandler(webapp2.RequestHandler):
    def get(self):
         #check for correct cookie
         name = self.request.cookies.get("name")
-        students = Student.query(Student.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name).fetch()
 
         #if cookie is correct, render page
         if len(students) != 0:
@@ -201,7 +197,7 @@ class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        students = Student.query(Student.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name).fetch()
 
         # if cookie is correct, render page
         if len(students) != 0:
@@ -221,7 +217,7 @@ class InstructorLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -330,7 +326,7 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -349,12 +345,13 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
             curInstructor = instructors[0]
             self.request.get('option')
+            courses = Course.Query('instructor')
             values = {
                 "username": curInstructor.ePantherID,
                 "instructor": curInstructor
@@ -445,8 +442,8 @@ class ADMINHandler(webapp2.RequestHandler):
         if name == "ADMIN":
 
 
-            numberOfStudents = Student.query().count()
-            numberOfInstructors = Instructor.query().count()
+            numberOfStudents = User.query().count()
+            numberOfInstructors = User.query().count()
             numberOfCourses = Course.query().count()
             studentInstructorRatio = numberOfStudents / numberOfInstructors
 
@@ -467,8 +464,8 @@ class ADMINHandler(webapp2.RequestHandler):
 
 
 
-        numberOfStudents = Student.query().count()
-        numberOfInstructors = Instructor.query().count()
+        numberOfStudents = User.query().count()
+        numberOfInstructors = User.query().count()
         numberOfCourses = Course.query().count()
         studentInstructorRatio = numberOfStudents/numberOfInstructors
 
