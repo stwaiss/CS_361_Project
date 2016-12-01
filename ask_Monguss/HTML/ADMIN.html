@@ -8,6 +8,8 @@
 <body>
     <div id="menubar">
         <b>ADMINISTRATOR</b> //
+        <a href="/ADMIN">Home</a> -
+        <a href="/ADMIN/create_user">Create New Users</a> -
         <a href="/logout">Log Out</a>
     </div>
     <div id="content">
@@ -86,9 +88,6 @@
                         FAIL
                     </td>
                 </tr>
-
-
-
             </table>
 
             <br>
@@ -108,7 +107,7 @@
                         Number of Students
                     </td>
                     <td>
-                        {{students}}
+                        {{numberOfStudents}}
                     </td>
                 </tr>
 
@@ -117,7 +116,7 @@
                         Number of Instructors
                     </td>
                     <td>
-                        {{instructors}}
+                        {{numberOfInstructors}}
                     </td>
                 </tr>
 
@@ -126,7 +125,7 @@
                         Number of Courses
                     </td>
                     <td>
-                        {{courses}}
+                        {{numberOfCourses}}
                     </td>
                 </tr>
 

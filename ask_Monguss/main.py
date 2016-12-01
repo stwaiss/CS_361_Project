@@ -32,12 +32,36 @@ JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.di
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        #check if generic janedoe account exists, if not, populate info for starting point
         student = User.query(User.ePantherID == "janedoe").fetch()
         if len(student) == 0:
-            course = Course(name="cs361").put()
+            #create new course
+            course_key = Course(name="cs361").put()
 
-            janedoe = User(ePantherID="janedoe", password="janedoe", isInstructor=0).put()
-            jrock = User(ePantherID="jrock", password="jrock", isInstructor=1).put()
+            #create new users
+            janedoe_key = User(ePantherID="janedoe", password="janedoe", isInstructor=0).put()
+            jrock_key = User(ePantherID="jrock", password="jrock", isInstructor=1).put()
+
+            #pull course info from key
+            course = course_key.get()
+
+            #update course instructors by appending an instructor
+            course.instructors.append(jrock_key)
+            course.put()
+
+            # update course students by appending a student
+            course.students.append(janedoe_key)
+            course.put()
+
+            #pull instructor from key and add a course
+            instructor = jrock_key.get()
+            instructor.courses.append(course_key)
+            instructor.put()
+
+            # pull student from key and add a course
+            student = janedoe_key.get()
+            student.courses.append(course_key)
+            student.put()
 
         template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
         self.response.write(template.render())
@@ -99,9 +123,10 @@ class LoginHandler(webapp2.RequestHandler):
 
 class LogoutHandler(webapp2.RequestHandler):
     def get(self):
+        name = self.request.cookies.get('name')
         self.response.delete_cookie('name')
         value = {
-            'username': self.request.cookies.get('name')
+            'username': name
         }
 
         template = JINJA_ENVIRONMENT.get_template('HTML/logout.html')
@@ -233,95 +258,6 @@ class InstructorLandingPageHandler(webapp2.RequestHandler):
             self.redirect('/')
 
 
-class AccountCreationHandler(webapp2.RequestHandler):
-    def get(self):
-        # check for correct cookie
-        name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
-
-        # if cookie is correct, render page
-        if len(instructors) != 0:
-            curInstructor = instructors[0]
-            values = {
-                "username": curInstructor.ePantherID,
-            }
-            template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
-            self.response.write(template.render(values))
-
-        # else redirect to login page
-        else:
-            self.redirect('/')
-
-    def post(self):
-        # check for correct cookie
-        name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
-
-        # if cookie is correct, render page
-        if len(instructors) != 0:
-            curInstructor = instructors[0]
-
-            username=self.request.get('ePantherID')
-            password=self.request.get('password')
-            credential=self.request.get('credential')
-
-            if credential == "instructor":
-                list = User.query(User.ePantherID == username and User.isInstructor == 1).fetch()
-                if len(list) == 0:
-                    newUser = User(ePantherID=username, password=password, isInstructor=1)
-                    newUser.put()
-                    values = {
-                        'username': username,
-                        'password': password,
-                        'isInstructor': 0
-                    }
-                    # Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreationSuccessful.html')
-                    self.response.write(template.render(values))
-                    return
-
-                else:
-                    userAlreadyExists = 1
-                    values = {
-                        'userAlreadyExists': userAlreadyExists,
-                        'username': username
-                    }
-                    #Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
-                    self.response.write(template.render(values))
-                    return
-
-            if credential == "student":
-                list = User.query(User.ePantherID == username and User.isInstructor == 0).fetch()
-                if len(list) == 0:
-                    newUser = User(ePantherID=username, password=password, isInstructor=0)
-                    newUser.put()
-                    values = {
-                        'username': username,
-                        'password': password,
-                        'isInstructor': 0
-                    }
-                    # Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreationSuccessful.html')
-                    self.response.write(template.render(values))
-                    return
-
-                else:
-                    userAlreadyExists = 1
-                    values = {
-                        'userAlreadyExists': userAlreadyExists,
-                        'username': username
-                    }
-                    # Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
-                    self.response.write(template.render(values))
-                    return
-
-        # else redirect to login page
-        else:
-            self.redirect('/')
-
-
 class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
@@ -331,31 +267,24 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
         # if cookie is correct, render page
         if len(instructors) != 0:
             curInstructor = instructors[0]
-            values = {
-                "username": curInstructor.ePantherID,
-                "instructor": curInstructor
-            }
-            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
-            self.response.write(template.render(values))
 
-        # else redirect to login page
-        else:
-            self.redirect('/')
-
-    def post(self):
-        # check for correct cookie
-        name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
-
-        # if cookie is correct, render page
-        if len(instructors) != 0:
-            curInstructor = instructors[0]
-            self.request.get('option')
-            courses = Course.Query('instructor')
-            values = {
-                "username": curInstructor.ePantherID,
-                "instructor": curInstructor
-            }
+            option = self.request.get('option')
+            # check if a dropdown has been selected, if not, set isChosen to 0 and don't render table
+            if option == "":
+                values = {
+                    "username": curInstructor.ePantherID,
+                    "courses": curInstructor.courses,
+                    "isChosen": 0
+                }
+            else:
+                selected_course_list = Course.Query(name=option).fetch()
+                selected_course = selected_course_list[0]
+                values = {
+                    "username": curInstructor.ePantherID,
+                    "courses": curInstructor.courses,
+                    "isChosen": 0,
+                    "selected_course": selected_course
+                }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
             self.response.write(template.render(values))
 
@@ -392,7 +321,7 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name and User.isInstructor == 1).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -410,7 +339,7 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name and User.isInstructor == 1).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -440,10 +369,8 @@ class ADMINHandler(webapp2.RequestHandler):
         name = self.request.cookies.get("name")
         # if cookie is correct, render page
         if name == "ADMIN":
-
-
-            numberOfStudents = User.query().count()
-            numberOfInstructors = User.query().count()
+            numberOfStudents = User.query(User.isInstructor == 0).count()
+            numberOfInstructors = User.query(User.isInstructor == 1).count()
             numberOfCourses = Course.query().count()
             studentInstructorRatio = numberOfStudents / numberOfInstructors
 
@@ -462,26 +389,90 @@ class ADMINHandler(webapp2.RequestHandler):
         else:
             self.redirect('/')
 
-
-
-        numberOfStudents = User.query().count()
-        numberOfInstructors = User.query().count()
-        numberOfCourses = Course.query().count()
-        studentInstructorRatio = numberOfStudents/numberOfInstructors
-
-
-        values = {
-            "students": numberOfStudents,
-            "instructors": numberOfInstructors,
-            "courses": numberOfCourses,
-            "studentInstructorRatio":studentInstructorRatio
-        }
-
-        template = JINJA_ENVIRONMENT.get_template('HTML/ADMIN.html')
-        self.response.write(template.render(values))
-
     def post(self):
         pass
+
+
+class ADMINAccountCreationHandler(webapp2.RequestHandler):
+    def get(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        if name == "ADMIN":
+            values = {
+                "username": "ADMINISTRATOR"
+            }
+            template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+            self.response.write(template.render(values))
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+    def post(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+
+        if name == "ADMIN":
+            username = self.request.get('ePantherID')
+            password = self.request.get('password')
+            credential = self.request.get('credential')
+
+            if credential == "instructor":
+                list = User.query(User.ePantherID == username).fetch()
+                if len(list) == 0:
+                    newUser = User(ePantherID=username, password=password, isInstructor=1)
+                    newUser.put()
+                    values = {
+                        'username': username,
+                        'password': password,
+                        'isInstructor': 1
+                    }
+                    # Refresh and write error message
+                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreationSuccessful.html')
+                    self.response.write(template.render(values))
+                    return
+
+                else:
+                    userAlreadyExists = 1
+                    values = {
+                        'userAlreadyExists': userAlreadyExists,
+                        'username': username
+                    }
+                    #Refresh and write error message
+                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+                    self.response.write(template.render(values))
+                    return
+
+            if credential == "student":
+                list = User.query(User.ePantherID == username).fetch()
+                if len(list) == 0:
+                    newUser = User(ePantherID=username, password=password, isInstructor=0)
+                    newUser.put()
+                    values = {
+                        'username': username,
+                        'password': password,
+                        'isInstructor': 0
+                    }
+                    # Refresh and write error message
+                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreationSuccessful.html')
+                    self.response.write(template.render(values))
+                    return
+
+                else:
+                    userAlreadyExists = 1
+                    values = {
+                        'userAlreadyExists': userAlreadyExists,
+                        'username': username
+                    }
+                    # Refresh and write error message
+                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+                    self.response.write(template.render(values))
+                    return
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
@@ -492,11 +483,10 @@ app = webapp2.WSGIApplication([
     ('/student/faq', StudentFAQHandler),
     ('/student/view_all', StudentViewAllQuestionsHandler),
     ('/instructor', InstructorLandingPageHandler),
-    ('/instructor/create', AccountCreationHandler),
     ('/instructor/view_all', InstructorViewAllQuestionsHandler),
     ('/instructor/faq', InstructorFaqHandler),
-    ('/instructor/faq/faqadd', InstructorFaqAddHandler),
-    ('/instructor/faq/faqdelete', InstructorDeleteHandler),
-    ('/ADMIN', ADMINHandler)
-
+    ('/instructor/faq/faq_add', InstructorFaqAddHandler),
+    ('/instructor/faq/faq_delete', InstructorDeleteHandler),
+    ('/ADMIN', ADMINHandler),
+    ('/ADMIN/create_user', ADMINAccountCreationHandler)
 ], debug=True)

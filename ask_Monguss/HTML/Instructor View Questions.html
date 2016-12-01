@@ -10,7 +10,6 @@
 		<a href="/instructor">Home</a> -
 		<a href="/instructor/view_all">Questions</a> -
 		<a href="/instructor/faq">FAQ</a> -
-		<a href="/instructor/create">Create New Users</a> -
 		<a href="/logout">Log Out</a>
 	</div>
 
@@ -18,40 +17,40 @@
 		<h1>View your course's questions</h1>
 		Pick a Course
 		<select>
-		{% for c in instructor.courses %}
-			<option value="{{c.name}}">{{c.name}}</option>
+		{% for c in courses %}
+			<option value="{{c.get().name}}">{{c.get().name}}</option>
 		{% endfor %}
 		</select>
 
-		<form action="/instructor/view_all" method="post">
+		<form action="/instructor/view_all" method="get">
 			<input type="submit" value="Update">
 		</form>
 
-		{% for course in instructor.courses %}
-			<h2>{{ course.name }}</h2>
-			<table width="100%">
-					<thead>
+		{% if isChosen == 1 %}
+		<table width="100%">
+				<thead>
+					<tr>
+						<th>Question</th>
+						<th>Submitted by</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for q in selected_course.questions %}
 						<tr>
-							<th>Question</th>
-							<th>Submitted by</th>
-							<th>Date</th>
+							<td> <b> {{ q.body }} </b> </td>
+							<td> {{ q.student }} </td>
+							<td> </td>
 						</tr>
-					</thead>
-					<tbody>
-						{% for question in course._questions %}
-							<tr>
-								<td> <b> {{ question.getBody() }} </b> </td>
-								<td> {{ question._student }} </td>
-								<td> {{ question._timestamps[0] }} </td>
-							</tr>
-							<tr>
-								<td colspan="3"> {{ question.answer }} </td>
-							</tr>
-						{% endfor %}
-					</tbody>
-			</table>
-			<br />
-		{% endfor %}
+						<tr>
+							<td colspan="3"> {{ q.answer }} </td>
+						</tr>
+					{% endfor %}
+				</tbody>
+		</table>
+		<br />
+		{% endif %}
+
 	</div>
 </body>
 </html>

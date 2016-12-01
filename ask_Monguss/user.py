@@ -6,4 +6,5 @@ class User(ndb.Model):
     ePantherID = ndb.StringProperty(required=True)
     password = ndb.StringProperty(required=True)
     isInstructor = ndb.IntegerProperty(required=True)
-    #courses = ndb.SructuredProperty(Course, repeated=True)
+    courses = ndb.KeyProperty(repeated=True)
+    questions = ndb.KeyProperty(repeated=True)
