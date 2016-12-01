@@ -50,13 +50,13 @@ class LoginHandler(webapp2.RequestHandler):
 
     def checkForMatch(self, username, password):
         # pull all students and check
-        students = User.query(User.ePantherID == username).fetch()
+        students = User.query(User.ePantherID == username and User.isInstructor == 0).fetch()
         for s in students:
             if s.password == password:
                 return 0
 
         # pull all instructors and check
-        instructors = User.query(User.ePantherID == username).fetch()
+        instructors = User.query(User.ePantherID == username and User.isInstructor == 1).fetch()
         for i in instructors:
             if i.password == password:
                 return 1
@@ -112,7 +112,7 @@ class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         #check for correct cookie
         name = self.request.cookies.get("name")
-        students = User.query(User.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name, User.isInstructor == 0).fetch()
 
         #if cookie is correct, render page
         if len(students) != 0:
@@ -132,7 +132,7 @@ class StudentAskHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        students = User.query(User.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name, User.isInstructor == 0).fetch()
 
         # if cookie is correct, render page
         if len(students) != 0:
@@ -154,7 +154,7 @@ class StudentAskHandler(webapp2.RequestHandler):
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        students = User.query(User.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name, User.isInstructor == 0).fetch()
 
         # if cookie is correct, render page
         if len(students) != 0:
@@ -176,7 +176,7 @@ class StudentFAQHandler(webapp2.RequestHandler):
    def get(self):
         #check for correct cookie
         name = self.request.cookies.get("name")
-        students = User.query(User.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name, User.isInstructor == 0).fetch()
 
         #if cookie is correct, render page
         if len(students) != 0:
@@ -197,7 +197,7 @@ class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        students = User.query(User.ePantherID == name).fetch()
+        students = User.query(User.ePantherID == name, User.isInstructor == 0).fetch()
 
         # if cookie is correct, render page
         if len(students) != 0:
@@ -217,7 +217,7 @@ class InstructorLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -237,7 +237,7 @@ class AccountCreationHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -255,7 +255,7 @@ class AccountCreationHandler(webapp2.RequestHandler):
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -266,9 +266,9 @@ class AccountCreationHandler(webapp2.RequestHandler):
             credential=self.request.get('credential')
 
             if credential == "instructor":
-                list = Instructor.query(Instructor.ePantherID == username).fetch()
+                list = User.query(User.ePantherID == username and User.isInstructor == 1).fetch()
                 if len(list) == 0:
-                    newUser = Instructor(ePantherID=username, password=password, isInstructor=1)
+                    newUser = User(ePantherID=username, password=password, isInstructor=1)
                     newUser.put()
                     values = {
                         'username': username,
@@ -292,9 +292,9 @@ class AccountCreationHandler(webapp2.RequestHandler):
                     return
 
             if credential == "student":
-                list = Student.query(Student.ePantherID == username).fetch()
+                list = User.query(User.ePantherID == username and User.isInstructor == 0).fetch()
                 if len(list) == 0:
-                    newUser = Student(ePantherID=username, password=password, isInstructor=0)
+                    newUser = User(ePantherID=username, password=password, isInstructor=0)
                     newUser.put()
                     values = {
                         'username': username,
@@ -326,7 +326,7 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -345,7 +345,7 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -367,7 +367,7 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
 class InstructorFaqHandler(webapp2.RequestHandler):
     def get(self):
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -392,7 +392,7 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name and User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
@@ -410,7 +410,7 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
-        instructors = Instructor.query(Instructor.ePantherID == name).fetch()
+        instructors = User.query(User.ePantherID == name and User.isInstructor == 1).fetch()
 
         # if cookie is correct, render page
         if len(instructors) != 0:
