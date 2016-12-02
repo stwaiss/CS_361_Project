@@ -133,6 +133,61 @@ class LogoutHandler(webapp2.RequestHandler):
         self.response.write(template.render(value))
 
 
+class ChangePasswordHandler(webapp2.RequestHandler):
+    def get(self):
+        name = self.request.cookies.get('name')
+        all_users = User.query(User.ePantherID == name).fetch()
+
+        if len(all_users) != 0:
+            value = {
+                'username': name,
+                'incorrectPassword': 0
+            }
+
+            template = JINJA_ENVIRONMENT.get_template('HTML/change_password.html')
+            self.response.write(template.render(value))
+
+        else:
+            self.redirect('/')
+
+    def post(self):
+        name = self.request.cookies.get('name')
+        all_users = User.query(User.ePantherID == name).fetch()
+
+        if len(all_users) != 0:
+            curUser = all_users[0]
+
+            curPassword = self.request.get('curPassword')
+            newPassword = self.request.get('newPassword')
+
+            # check if passwords match, then set new password
+            if curPassword == curUser.password:
+                curUser.password = newPassword
+                curUser.put()
+
+                values = {
+                    "isInstructor": curUser.isInstructor
+                }
+
+                template = JINJA_ENVIRONMENT.get_template('HTML/Change Password Successful.html')
+                self.response.write(template.render(values))
+                return
+
+            # if current password doesn't match, render error
+            else:
+                values = {
+                    'username': curUser.ePantherID,
+                    'incorrectPassword': 1
+                }
+
+                template = JINJA_ENVIRONMENT.get_template('HTML/change_password.html')
+                self.response.write(template.render(values))
+                return
+
+        else:
+            self.redirect('/')
+
+
 class StudentLandingPageHandler(webapp2.RequestHandler):
     def get(self):
         #check for correct cookie
@@ -478,6 +533,7 @@ app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
     ('/logout', LogoutHandler),
+    ('/change_password',ChangePasswordHandler),
     ('/student', StudentLandingPageHandler),
     ('/student/ask', StudentAskHandler),
     ('/student/faq', StudentFAQHandler),
