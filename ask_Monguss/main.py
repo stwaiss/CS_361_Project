@@ -63,7 +63,7 @@ class MainHandler(webapp2.RequestHandler):
             student.courses.append(course_key)
             student.put()
 
-        template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
+        template = JINJA_ENVIRONMENT.get_template('HTML/Login.html')
         self.response.write(template.render())
 
 
@@ -101,7 +101,7 @@ class LoginHandler(webapp2.RequestHandler):
                 'credentials': self.match
             }
 
-            template = JINJA_ENVIRONMENT.get_template('HTML/ePantherID_Log-in.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Login.html')
             self.response.write(template.render(values))
             return
 
@@ -129,7 +129,7 @@ class LogoutHandler(webapp2.RequestHandler):
             'username': name
         }
 
-        template = JINJA_ENVIRONMENT.get_template('HTML/logout.html')
+        template = JINJA_ENVIRONMENT.get_template('HTML/Logout.html')
         self.response.write(template.render(value))
 
 
@@ -144,7 +144,7 @@ class ChangePasswordHandler(webapp2.RequestHandler):
                 'incorrectPassword': 0
             }
 
-            template = JINJA_ENVIRONMENT.get_template('HTML/change_password.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Change Password.html')
             self.response.write(template.render(value))
 
         else:
@@ -180,7 +180,7 @@ class ChangePasswordHandler(webapp2.RequestHandler):
                     'incorrectPassword': 1
                 }
 
-                template = JINJA_ENVIRONMENT.get_template('HTML/change_password.html')
+                template = JINJA_ENVIRONMENT.get_template('HTML/Change Password.html')
                 self.response.write(template.render(values))
                 return
 
@@ -200,7 +200,7 @@ class StudentLandingPageHandler(webapp2.RequestHandler):
             values = {
                 "username": curStudent.ePantherID
             }
-            template = JINJA_ENVIRONMENT.get_template('HTML/Student_home.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Student Home.html')
             self.response.write(template.render(values))
 
         #else redirect to login page
@@ -224,7 +224,7 @@ class StudentAskHandler(webapp2.RequestHandler):
                 #'instructor': curStudent.instructor
             }
 
-            template = JINJA_ENVIRONMENT.get_template('HTML/Student_Submission_Form.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Student Question Submission Form.html')
             self.response.write(template.render(values))
 
         # else redirect to login page
@@ -265,7 +265,7 @@ class StudentFAQHandler(webapp2.RequestHandler):
                 "username": curStudent.ePantherID,
                 "isInstructor": 0
             }
-            template = JINJA_ENVIRONMENT.get_template('HTML/FAQ.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Student FAQ.html')
             self.response.write(template.render(values))
 
         #else redirect to login page
@@ -285,7 +285,7 @@ class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
             values = {
                 "username": curStudent.ePantherID,
             }
-            template = JINJA_ENVIRONMENT.get_template('HTML/Student_View_All_Answers.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Student View All Answers.html')
             self.response.write(template.render(values))
 
         # else redirect to login page
@@ -305,7 +305,7 @@ class InstructorLandingPageHandler(webapp2.RequestHandler):
             values = {
                 "username": curInstructor.ePantherID,
             }
-            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor_home.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor Home.html')
             self.response.write(template.render(values))
 
         # else redirect to login page
@@ -363,7 +363,7 @@ class InstructorFaqHandler(webapp2.RequestHandler):
             }
             faqs = list(FAQ.query().order(FAQ.ts))
 
-            template = JINJA_ENVIRONMENT.get_template('HTML/InstructorFAQ.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ.html')
             self.response.write(template.render(values))
 
 
@@ -384,7 +384,7 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
             values = {
                 "username": curInstructor.ePantherID,
             }
-            template = JINJA_ENVIRONMENT.get_template('HTML/FAQadd.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Add.html')
             self.response.write(template.render(values))
 
         # else redirect to login page
@@ -456,7 +456,7 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
             values = {
                 "username": "ADMINISTRATOR"
             }
-            template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+            template = JINJA_ENVIRONMENT.get_template('HTML/Account Creation.html')
             self.response.write(template.render(values))
 
         # else redirect to login page
@@ -483,7 +483,7 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
                         'isInstructor': 1
                     }
                     # Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreationSuccessful.html')
+                    template = JINJA_ENVIRONMENT.get_template('HTML/Account Creation Successful.html')
                     self.response.write(template.render(values))
                     return
 
@@ -494,7 +494,7 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
                         'username': username
                     }
                     #Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+                    template = JINJA_ENVIRONMENT.get_template('HTML/Account Creation.html')
                     self.response.write(template.render(values))
                     return
 
@@ -509,7 +509,7 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
                         'isInstructor': 0
                     }
                     # Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreationSuccessful.html')
+                    template = JINJA_ENVIRONMENT.get_template('HTML/Account Creation Successful.html')
                     self.response.write(template.render(values))
                     return
 
@@ -520,7 +520,7 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
                         'username': username
                     }
                     # Refresh and write error message
-                    template = JINJA_ENVIRONMENT.get_template('HTML/AccountCreation.html')
+                    template = JINJA_ENVIRONMENT.get_template('HTML/Account Creation.html')
                     self.response.write(template.render(values))
                     return
 
