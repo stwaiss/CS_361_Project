@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create a New Course</title>
+    <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+</head>
+<body>
+    <div id="menubar">
+
+    </div>
+
+
+    <div id="content">
+        <h1>Create a New Course</h1>
+
+        <form action="/ADMIN/create_course" method="post">
+            <table border="0">
+                <tr>
+                    <td>Course ID</td>
+                    <td> <input type="text" name="courseID" value="CS101" maxlength="6"></td>
+                </tr>
+            </table>
+
+            <br>
+
+            <table>
+                <tr>
+                    <th>Instructors</th>
+                    <th>Students</th>
+                </tr>
+
+                <tr>
+                    <td>
+                        {% for i in all_instructors %}
+                        <input type="checkbox" name="instructors" value="{{i.ePantherID}}">{{i.ePantherID}}<br>
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        {% for s in all_students %}
+                        <input type="checkbox" name="students" value="{{s.ePantherID}}">{{s.ePantherID}}<br>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+</body>
+</html>

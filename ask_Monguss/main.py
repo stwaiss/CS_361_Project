@@ -36,7 +36,7 @@ class MainHandler(webapp2.RequestHandler):
         student = User.query(User.ePantherID == "janedoe").fetch()
         if len(student) == 0:
             #create new course
-            course_key = Course(name="cs361").put()
+            course_key = Course(name="CS361").put()
 
             #create new users
             janedoe_key = User(ePantherID="janedoe", password="janedoe", isInstructor=0).put()
@@ -529,6 +529,79 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
             self.redirect('/')
 
 
+class ADMINCourseCreationHandler(webapp2.RequestHandler):
+    def get(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        if name == "ADMIN":
+            all_instructors = User.query(User.isInstructor == 1).fetch()
+            all_students = User.query(User.isInstructor == 0).fetch()
+
+            values = {
+                "username": "ADMINISTRATOR",
+                "all_instructors": all_instructors,
+                "all_students": all_students
+            }
+
+            template = JINJA_ENVIRONMENT.get_template('HTML/Course Creation.html')
+            self.response.write(template.render(values))
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+    def post(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        if name == "ADMIN":
+            # store form data
+            course_ID = self.request.get('courseID')
+            selected_instructors_list = self.request.get_all('instructors')
+            selected_students_list = self.request.get_all('students')
+
+            # create new course and retain key
+            course_key = Course(name=course_ID).put()
+            course = course_key.get()
+
+            # iterate over check boxes to add instructors to courses
+            for i in selected_instructors_list:
+                instructor = User.query(User.ePantherID == i).fetch()[0]
+
+                # add course key to instructor and put back
+                instructor.courses.append(course_key)
+                instructor.put()
+
+                # add instructor key to course and put back
+                course.instructors.append(instructor.key)
+                course.put()
+
+            # iterate over check boxes to add students to courses
+            for s in selected_students_list:
+                student = User.query(User.ePantherID == s).fetch()[0]
+
+                # add course key to student and put back
+                student.courses.append(course_key)
+                student.put()
+
+                # add student key to course and put back
+                course.students.append(student.key)
+                course.put()
+
+            values = {
+                "courseID": course_ID,
+                "addedStudents": selected_students_list,
+                "addedInstructors": selected_instructors_list
+            }
+
+            template = JINJA_ENVIRONMENT.get_template('HTML/Course Creation Successful.html')
+            self.response.write(template.render(values))
+
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
@@ -544,5 +617,6 @@ app = webapp2.WSGIApplication([
     ('/instructor/faq/faq_add', InstructorFaqAddHandler),
     ('/instructor/faq/faq_delete', InstructorDeleteHandler),
     ('/ADMIN', ADMINHandler),
-    ('/ADMIN/create_user', ADMINAccountCreationHandler)
+    ('/ADMIN/create_user', ADMINAccountCreationHandler),
+    ('/ADMIN/create_course', ADMINCourseCreationHandler)
 ], debug=True)
