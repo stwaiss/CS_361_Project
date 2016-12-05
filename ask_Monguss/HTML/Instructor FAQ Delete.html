@@ -5,20 +5,40 @@
                     deleteFAQ
                 </title>
 
-                <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+                <link rel="stylesheet" type="text/css" href="/CSS/main.css">
 
             </head>
         <body>
             <div id="content">
-                 <form method='POST' action = "/instructor/faq/faq_delete">
-                    Choose FAQ to Delete<select name="question">
-                        {% for q in faqs %}
-                        <option value="{{ q.question }}">{{ q.question }}</option>
+                <h1>Delete an FAQ Item</h1>
+
+                {% if noQuestionChosen == 1%}
+                <center><p style="color:red"><b>No FAQ was selected</b></p></center>
+                {% endif %}
+
+                <form method='get' action = "/instructor/faq/faq_delete">
+                    Choose Course <select name="course">
+                        {% for c in username.courses %}
+                        <option value="{{c.get().name}}">{{c.get().name}}</option>
                         {% endfor %}
                     </select>
 
-                    <br> <input type="submit" value='Remove'>
+                    {% if courseIsChosen == 0 %}
+                    <input type="submit" value='Update'>
+                    {% endif %}
                 </form>
+
+                {% if courseIsChosen == 1%}
+                <form action="/instructor/faq/faq_delete" method="post">
+                    Choose FAQ to Delete
+                    <select name="question">
+                        {% for q in questions %}
+                        <option value="{{ q.get().question }}">{{ q.get().question }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="submit" value='Remove'>
+                </form>
+                {% endif %}
             </div>
         </body>
 </HTML>
