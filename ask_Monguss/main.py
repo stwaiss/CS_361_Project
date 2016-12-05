@@ -391,7 +391,7 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
         if len(instructors) != 0:
             curInstructor = instructors[0]
             values = {
-                "username": curInstructor.ePantherID,
+                "username": curInstructor
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Add.html')
             self.response.write(template.render(values))
@@ -407,11 +407,21 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
 
         # if cookie is correct, render page
         if len(instructors) != 0:
+            # add faq item to data store
             question = self.request.get('question')
-
             answer = self.request.get('answer')
+            courseName = str(self.request.get('course'))
             faq = FAQ(question=question, answer=answer)
+            faq_key = faq.put()
+
+            # add faq key to course item
+            course = Course.query(Course.name == courseName).fetch()[0]
+            course.FAQ.append(faq_key)
+
+            # add course key to faq item
+            faq.course = course.key
             faq.put()
+
             self.response.write('<meta http-equiv="refresh" content="0.5;url=/instructor/faq">')
 
         # else redirect to login page
