@@ -220,8 +220,8 @@ class StudentAskHandler(webapp2.RequestHandler):
 
             values = {
                 'username': curStudent.ePantherID,
-                'course': curStudent.courses,
-                #'instructor': curStudent.instructor
+                'course': curStudent.courses
+                # 'instructor': curStudent.instructor
             }
 
             template = JINJA_ENVIRONMENT.get_template('HTML/Student Question Submission Form.html')
@@ -239,12 +239,21 @@ class StudentAskHandler(webapp2.RequestHandler):
         # if cookie is correct, render page
         if len(students) != 0:
             q = Question(str(self.request.get('textbox')))
-            q._student = self.request.get('user')
-            q._instructor = self.request.get('instructor')
+            q.student = self.request.get(name)
+            q.instructor = self.request.get('instructor')
             q.timestamp = datetime.datetime.now().strftime('%m-%d-%Y')
 
-            self.user.addQuestion(q)
-            print "Question posted successfully. Redirecting..."
+            # put question to datastore
+            q_key = q.put()
+
+            # add question to student's list
+            name.questions.append(q_key)
+            name.put()
+
+            # add question to course list
+            course = Course.query(Course.name == self.request.get('course'))[0]
+            course.questions.append(q_key)
+
             self.redirect('/student')
 
         # else redirect to login page

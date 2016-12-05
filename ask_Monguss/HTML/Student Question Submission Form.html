@@ -19,10 +19,11 @@
 	<p> To view the Frequently Asked Questions, click here: <a href="/student/faq">FAQ List</a> </p> <br>
 	
 
-	<p>Select your course: <select name="course">
+	<p>Select your course:
+		<select name="course">
 			<option value="default">Course</option>
 			{% for c in course %}
-			<option value="{{c}}">{{c}}</option>
+			<option value="{{c.get().name}}">{{c.get().name}}</option>
 			{% endfor %}
 		</select> 
 	</p>
