@@ -332,21 +332,21 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
         if len(instructors) != 0:
             curInstructor = instructors[0]
 
-            option = self.request.get('option')
+            chosenCourse = self.request.get('courseName')
             # check if a dropdown has been selected, if not, set isChosen to 0 and don't render table
-            if option == "":
+            if chosenCourse == "":
                 values = {
                     "username": curInstructor.ePantherID,
                     "courses": curInstructor.courses,
                     "isChosen": 0
                 }
             else:
-                selected_course_list = Course.Query(name=option).fetch()
+                selected_course_list = Course.query(ndb.GenericProperty('name') == chosenCourse).fetch()
                 selected_course = selected_course_list[0]
                 values = {
                     "username": curInstructor.ePantherID,
                     "courses": curInstructor.courses,
-                    "isChosen": 0,
+                    "isChosen": 1,
                     "selected_course": selected_course
                 }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')

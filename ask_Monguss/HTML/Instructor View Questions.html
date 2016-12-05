@@ -15,14 +15,14 @@
 
 	<div id="content">
 		<h1>View your course's questions</h1>
-		Pick a Course
-		<select>
-		{% for c in courses %}
-			<option value="{{c.get().name}}">{{c.get().name}}</option>
-		{% endfor %}
-		</select>
 
 		<form action="/instructor/view_all" method="get">
+			Pick a Course
+			<select name="courseName">
+				{% for c in courses %}
+					<option value="{{c.get().name}}">{{c.get().name}}</option>
+				{% endfor %}
+			</select>
 			<input type="submit" value="Update">
 		</form>
 
