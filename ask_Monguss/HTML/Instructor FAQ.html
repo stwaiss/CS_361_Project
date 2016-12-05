@@ -15,7 +15,7 @@
 
 <body>
 		<div id="menubar">
-			<b>{{username}}</b> //
+			<b>{{username.ePantherID}}</b> //
 			<a href="/instructor">Home</a> -
 			<a href="/instructor/view_all">Questions</a> -
 			<a href="/instructor/faq">FAQ</a> -
@@ -30,26 +30,43 @@
 
 		<br>
 
+		<form action="/instructor/faq" method="get">
+			<p>Select a course</p>
+			<select name="course">
+				{% for c in username.courses %}
+				<option value="{{c.get().name}}">{{c.get().name}}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" value="Update">
+		</form>
+
+		{% if isChosen == 1 %}
 		<div>
 		<table align="center">
+			<tr>
+				<td colspan="2" align="center">
+					<h4>{{courseName}}</h4>
+				</td>
+			</tr>
 			<tr>
 				<th>Question</th>
 				<th>Answer</th>
 			</tr>
 
-			{% for q in faqs %}
 
+			{% for q in faq %}
 			<tr>
-				<td>{{ q.question }}</td>
-				<td>{{ q.answer }}</td>
+				<td>{{ q.get().question }}</td>
+				<td>{{ q.get().answer }}</td>
 			</tr>
 			{% endfor %}
 		</table>
-	</div>
-	    <a id='add' href="/instructor/faq/faq_add">Add</a>
-        <a href="/instructor">Back</a>
-	    <!--<a id='delete' href="/instructor/faq/faqdelete">Delete</a>-->
-	</div>
+		</div>
+			<a id='add' href="/instructor/faq/faq_add">Add</a>
+			<a href="/instructor">Back</a>
+			<!--<a id='delete' href="/instructor/faq/faqdelete">Delete</a>-->
+		</div>
+		{% endif %}
 </body>
 
 </HTML>
