@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FAQ</title>
+	<link rel="stylesheet" type="text/css" href="/CSS/main.css">
+</head>
+
+<body>
+	<div>
+		<ul>
+			<li class="username">{{username.ePantherID}}</a></li>
+			<li><a href="/instructor">Home</a></li>
+			<li><a href="/instructor/view_all">Questions</a></li>
+			<li><a href="/instructor/faq">FAQ</a></li>
+			<li><a href="/change_password">Change Password</a></li>
+			<li><a href="/logout">Log Out</a></li>
+		</ul>
+	</div>
+
+	<div id="content">
+		<h1>Add new item to FAQ</h1>
+		<form method="POST" action='/instructor/faq/faq_add'>
+			<table>
+				<tr>
+					<td>
+						Course
+					</td>
+					<td>
+						<select name="course">
+							{% for c in username.courses %}
+							<option name="{{c.get().name}}">{{c.get().name}}</option>
+							{% endfor %}
+						</select>
+					</td>
+
+				</tr>
+
+				<tr>
+					<td>
+						Question
+					</td>
+					<td>
+						<input type="text" name="question">
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Answer
+					</td>
+					<td>
+						<textarea name="answer" rows="10" cols="50">
+
+						</textarea>
+					</td>
+				</tr>
+			</table>
+
+			<input type='submit' value='Add'/>
+		</form>
+	</div>
+ </body>
+</html>

@@ -1,12 +1,9 @@
 import types
+from google.appengine.ext import ndb
 
 
-class Reply(object):
-    _body = ''
-    _timestamps = list()
-    _currentStatus = 0
-
-    def __init__(self, body):
-        if isinstance(body, types.StringType):
-            raise TypeError("Reply.body only accepts String Objects")
-        self._body = body
+class Reply(ndb.Model):
+    body = ndb.StringProperty(required=True)
+    timestamp = ndb.DateTimeProperty()
+    instructor = ndb.KeyProperty()
+    question = ndb.KeyProperty()

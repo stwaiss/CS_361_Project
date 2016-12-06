@@ -1,0 +1,64 @@
+<!DOCTYPE <html>
+<head>
+	<title>UWM - Submiting Questions Form - Student</title>
+	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
+	<link rel="stylesheet" type="text/css" href="../CSS/Student_Submission_Form.css">
+</head>
+
+<body>
+	<div>
+		<ul>
+			<li class="username">{{username}}</a></li>
+			<li><a href="/student">Home</a></li>
+			<li><a href="/student/view_all">Questions</a></li>
+			<li><a href="/student/faq">FAQ</a></li>
+			<li><a href="/student/ask">Submit a Question</a></li>
+			<li><a href="/change_password">Change Password</a></li>
+			<li><a href="/logout">Log Out</a></li>
+		</ul>
+	</div>
+	<div id="content">
+	<h1>Welcome to the UWM - <br> Submitting Questions Form </h1>
+
+	<p> To view the Frequently Asked Questions, click here: <a href="/student/faq">FAQ List</a> </p> <br>
+		<form action="/student/ask" method="get">
+			<p>Select a course:
+				<select name="course">
+					{% for c in course %}
+					<option value="{{c.get().name}}">{{c.get().name}}</option>
+					{% endfor %}
+				</select>
+
+				{% if isChosen != 1 %}
+					<input type="submit" value="Update">
+				{% endif %}
+			</p>
+		</form>
+
+		{% if isChosen == 1 %}
+		<form action="/student/ask" method="post">
+			<p>Select an Instructor:
+				<select name="instructor">
+					{% for i in instructors %}
+					<option value="{{i.get().ePantherID}}">{{i.get().ePantherID}}</option>
+					{% endfor %}
+				</select>
+			</p>
+
+			<p>Select a Topic:
+				<select name="topic">
+					<option value="Homework">Homework</option>
+					<option value="Assignment">Assignment</option>
+					<option value="Exam">Exam</option>
+				</select>
+			</p>
+
+			<br>
+
+			<input type="text" name="hiddencourse" value="{{hiddencourse}}" hidden>
+			<textarea name="body" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>
+			<input type="submit" value="Submit">
+		</form>
+		{% endif %}
+</body>
+</html>

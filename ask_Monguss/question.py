@@ -1,39 +1,17 @@
 import types
 from reply import Reply
+from google.appengine.ext import ndb
 
 
-class Question(object):
-    _body = ''
-    _faqAttachments = list()
-    _replies = list()
-    _timestamp = ''
-    _student = ''
-    _instructor = ''
-    _title = ''
-    _status = ''
+class Question(ndb.Model):
+    # all required fields
+    topic = ndb.StringProperty(required=True)
+    body = ndb.StringProperty(required=True)
+    student = ndb.KeyProperty(required=True)
+    instructor = ndb.KeyProperty(required=True)
+    course = ndb.KeyProperty(required=True)
 
-    def __init__(self, body):
-        if not isinstance(body, types.StringType):
-            raise TypeError("FAQ.question only accepts String Objects")
-        self._body = body
-
-        self._replies = list()
-        self._timestamps = list()
-
-    def getBody(self):
-        return self._body
-
-    def getTitle(self):
-        return self._title
-
-    def getStudent(self):
-        return self._student
-
-    def getInstructor(self):
-        return self._instructor
-
-    #forces replies list to only consist of reply objects. Don't use question.replies[0] = ...
-    def addReply(self, r):
-        if not isinstance(r, Reply):
-            raise TypeError("Question.replies only accepts Question Objects")
-        self.questions.append(r)
+    answer = ndb.StringProperty()
+    faqAttachments = ndb.KeyProperty(repeated=True)
+    replies = ndb.StructuredProperty(Reply, repeated=True)
+    timestamp = ndb.DateTimeProperty()

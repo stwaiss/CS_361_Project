@@ -1,0 +1,71 @@
+<!DOCTYPE <html>
+<head>
+	<title>
+		Student View Answers
+	</title>
+
+	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
+
+	<style>
+		td{
+			text-align: center;
+		}
+	</style>
+
+</head>
+<body>
+	<div>
+		<ul>
+			<li class="username">{{username}}</a></li>
+			<li><a href="/student">Home</a></li>
+			<li><a href="/student/view_all">Questions</a></li>
+			<li><a href="/student/faq">FAQ</a></li>
+			<li><a href="/student/ask">Submit a Question</a></li>
+			<li><a href="/change_password">Change Password</a></li>
+			<li><a href="/logout">Log Out</a></li>
+		</ul>
+	</div>
+	<div id="content">
+	<h1>Answers to your submitted questions</h1>
+		<table class="table table-bordered table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Course #</th>
+					<th>Question</th>
+					<th>Answer</th>
+					<th>Date Submitted</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for q in questions %}
+				<tr>
+					<td>
+						{{q.course.get().name}}
+					</td>
+
+					<td>
+						{{q.body}}
+					</td>
+
+					<td>
+						{% if q.answer == "" %}
+						(Not yet answered)
+						{% endif %}
+
+						{% if q.answer != "" %}
+						{{q.answer}}
+						{% endif %}
+					</td>
+
+					<td>
+						{{q.timestamp.strftime('%m-%d-%Y')}}
+					</td>
+
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

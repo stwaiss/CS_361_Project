@@ -5,53 +5,58 @@
 </head>
 <body>
 
-	<div id="menubar">
-		<b>{{username}}</b> //
-		<a href="/instructor">Home</a> -
-		<a href="/instructor/view_all">Questions</a> -
-		<a href="/instructor/faq">FAQ</a> -
-		<a href="/instructor/create">Create New Users</a> -
-		<a href="/logout">Log Out</a>
+	<div>
+		<ul>
+			<li class="username">{{username}}</a></li>
+			<li><a href="/instructor">Home</a></li>
+			<li><a href="/instructor/view_all">Questions</a></li>
+			<li><a href="/instructor/faq">FAQ</a></li>
+			<li><a href="/change_password">Change Password</a></li>
+			<li><a href="/logout">Log Out</a></li>
+		</ul>
 	</div>
 
 	<div id="content">
 		<h1>View your course's questions</h1>
-		Pick a Course
-		<select>
-		{% for c in instructor.courses %}
-			<option value="{{c.name}}">{{c.name}}</option>
-		{% endfor %}
-		</select>
 
-		<form action="/instructor/view_all" method="post">
+		<form action="/instructor/view_all" method="get">
+			Pick a Course
+			<select name="courseName">
+				{% for c in courses %}
+					<option value="{{c.get().name}}">{{c.get().name}}</option>
+				{% endfor %}
+			</select>
 			<input type="submit" value="Update">
 		</form>
 
-		{% for course in instructor.courses %}
-			<h2>{{ course.name }}</h2>
-			<table width="100%">
-					<thead>
-						<tr>
-							<th>Question</th>
-							<th>Submitted by</th>
-							<th>Date</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for question in course._questions %}
-							<tr>
-								<td> <b> {{ question.getBody() }} </b> </td>
-								<td> {{ question._student }} </td>
-								<td> {{ question._timestamps[0] }} </td>
-							</tr>
-							<tr>
-								<td colspan="3"> {{ question.answer }} </td>
-							</tr>
-						{% endfor %}
-					</tbody>
-			</table>
-			<br />
-		{% endfor %}
+		{% if isChosen == 1 %}
+		<table>
+			<thead>
+				<tr>
+                    <td colspan="2" align="center">
+                        <h4>{{courseQuestions.name}}</h4>
+                    </td>
+                </tr>
+				<tr>
+					<th>Question</th>
+					<th>Submitted by</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for q in courseQuestions.questions %}
+					<tr>
+						<td>{{q.get().body}}</td>
+						<td>{{q.get().student.get().ePantherID}}</td>
+						<td>{{q.get().timestamp.strftime('%m-%d-%Y')}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<br />
+		{% endif %}
+
 	</div>
 </body>
 </html>

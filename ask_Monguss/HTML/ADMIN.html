@@ -6,92 +6,22 @@
     <link rel="stylesheet" type="text/css" href="../CSS/main.css">
  </head>
 <body>
-    <div id="menubar">
-        <b>ADMINISTRATOR</b> //
-        <a href="/logout">Log Out</a>
-    </div>
+    <div>
+		<ul>
+			<li class="username">{{username}}</a></li>
+			<li><a href="/ADMIN">Home</a></li>
+			<li><a href="/ADMIN/create_user">Create New Users</a></li>
+			<li><a href="/ADMIN/create_course">Create New Courses</a></li>
+			<li><a href="/logout">Log Out</a></li>
+		</ul>
+	</div>
+
     <div id="content">
         <center>
             <h1>Welcome Administrator</h1>
             <h2>Status: Currently Online</h2>
 
-            <h3 align="center">Test Case Statuses</h3>
-            <table>
-                <th>
-                    Test Case Name
-                </th>
-                <th>
-                    Test Case P/F
-                </th>
-
-                <tr>
-                    <td>
-                        testLogIn
-                    </td>
-                    <td style="background-color:green">
-                        PASS
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        testCreateNewUser
-                    </td>
-                    <td style="background-color:green">
-                        PASS
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        testViewQuestions_StudentSide
-                    </td>
-                    <td style="background-color:red">
-                        FAIL
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        testViewQuestions_InstructorSide
-                    </td>
-                    <td style="background-color:red">
-                        FAIL
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        testCountUnanswered
-                    </td>
-                    <td style="background-color:red">
-                        FAIL
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        testCheckAnswered
-                    </td>
-                    <td style="background-color:red">
-                        FAIL
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        testDeleteFAQItem
-                    </td>
-                    <td style="background-color:red">
-                        FAIL
-                    </td>
-                </tr>
-
-
-
-            </table>
-
-            <br>
+            <hr>
 
             <h3 align="center">Vital Statistics</h3>
             <table>
@@ -108,7 +38,7 @@
                         Number of Students
                     </td>
                     <td>
-                        {{students}}
+                        {{numberOfStudents}}
                     </td>
                 </tr>
 
@@ -117,7 +47,7 @@
                         Number of Instructors
                     </td>
                     <td>
-                        {{instructors}}
+                        {{numberOfInstructors}}
                     </td>
                 </tr>
 
@@ -126,7 +56,7 @@
                         Number of Courses
                     </td>
                     <td>
-                        {{courses}}
+                        {{numberOfCourses}}
                     </td>
                 </tr>
 
@@ -138,6 +68,37 @@
                         {{studentInstructorRatio}}
                     </td>
                 </tr>
+
+                <tr>
+                    <td>
+                        Total Questions Submitted
+                    </td>
+
+                    <td>
+                        {{totalQuestions}}
+                    </td>
+                </tr>
+
+                <tr>
+                   <td>
+                       Total Questions Answered
+                   </td>
+
+                   <td>
+                       {{answeredQuestions}}
+                   </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Total Questions Unanswered
+                    </td>
+
+                    <td>
+                        {{unansweredQuestions}}
+                    </td>
+                </tr>
+
             </table>
         </center>
     </div>

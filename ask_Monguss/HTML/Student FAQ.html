@@ -14,14 +14,18 @@
 </head>
 
 <body>
-		<div id="menubar">
-			<b>{{username}}</b> //
-			<a href="/instructor">Home</a> -
-			<a href="/instructor/view_all">Questions</a> -
-			<a href="/instructor/faq">FAQ</a> -
-			<a href="/instructor/create">Create New Users</a> -
-			<a href="/logout">Log Out</a>
-		</div>
+	<div>
+		<ul>
+			<li class="username">{{username.ePantherID}}</a></li>
+			<li><a href="/student">Home</a></li>
+			<li><a href="/student/view_all">Questions</a></li>
+			<li><a href="/student/faq">FAQ</a></li>
+			<li><a href="/student/ask">Submit a Question</a></li>
+			<li><a href="/change_password">Change Password</a></li>
+			<li><a href="/logout">Log Out</a></li>
+		</ul>
+	</div>
+
 	<div id="content">
 		<h1>Frequently Asked Questions</h1>
 
@@ -30,27 +34,42 @@
 
 		<br>
 
-		<p> To return back to the Question Submission Form, click here: <a href="">Question Submission Form</a> </p> <br>
+		<form action="/student/faq" method="get">
+			<p>Select a course</p>
+			<select name="course">
+				{% for c in username.courses %}
+				<option value="{{c.get().name}}">{{c.get().name}}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" value="Update">
+		</form>
 
+		{% if isChosen == 1 %}
+		<br>
+		<hr>
+		<br>
 		<div>
 		<table align="center">
+			<tr>
+				<td colspan="2" align="center">
+					<h4>{{courseName}}</h4>
+				</td>
+			</tr>
 			<tr>
 				<th>Question</th>
 				<th>Answer</th>
 			</tr>
 
-			{% for q in faqs %}
+			{% for q in faq %}
 
 			<tr>
-				<td>{{ q.question }}</td>
-				<td>{{ q.answer }}</td>
+				<td>{{ q.get().question }}</td>
+				<td>{{ q.get().answer }}</td>
 			</tr>
 			{% endfor %}
 		</table>
-	</div>
-	    <a id='add' href="/instructor/faq/faqadd">Add</a>
-        <a href="/instructor">Back</a>
-	    <!--<a id='delete' href="/instructor/faq/faqdelete">Delete</a>-->
+		{% endif %}
+		</div>
 	</div>
 </body>
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Successfully Created</title>
+     <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+</head>
+
+<body>
+    <div id="content">
+        <h1>{{courseID}} has been successfully created. Below are the added users:</h1>
+
+        <table>
+            <tr>
+                <th><h4>Instructors</h4></th>
+                <th><h4>Students</h4></th>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        {% for i in addedInstructors %}
+                        <li>{{i}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+
+                <td>
+                    <ul>
+                        {% for s in addedStudents %}
+                        <li>{{s}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+        </table>
+
+        <form action="/ADMIN/create_course" method="get">
+            <input type="submit" value="Back">
+        </form>
+    </div>
+
+</body>
+</html>
