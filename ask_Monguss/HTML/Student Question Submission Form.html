@@ -19,59 +19,44 @@
 	<h1>Welcome to the UWM - <br> Submitting Questions Form </h1>
 
 	<p> To view the Frequently Asked Questions, click here: <a href="/student/faq">FAQ List</a> </p> <br>
-	
-	<form method="POST">
-		<table>
-			<tr>
-				<td>
-					Select your course
-				</td>
-				<td>
-					<select name="course">
-						<option value="default">Course</option>
-						{% for c in course %}
-						<option value="{{c.get().name}}">{{c.get().name}}</option>
-						{% endfor %}
-					</select>
-				</td>
-			</tr>
+		<form action="/student/ask" method="get">
+			<p>Select a course:
+				<select name="course">
+					{% for c in course %}
+					<option value="{{c.get().name}}">{{c.get().name}}</option>
+					{% endfor %}
+				</select>
 
-			<tr>
-				<td>
-					Select your instructor
-				</td>
-				<td>
-					<select name="instructor">
-						<option value="instructor">Instructor</option>
-						{% for i in instructor %}
-						<option value="{{i._ePantherID}}">{{i._ePantherID}}</option>
-						{% endfor %}
-					</select>
-				</td>
-			</tr>
+				{% if isChosen != 1 %}
+					<input type="submit" value="Update">
+				{% endif %}
+			</p>
+		</form>
 
-			<tr>
-				<td>
-					Select topic of question
-				</td>
-				<td>
-					<select name="topic">
-						<option value="topics">Topic</option>
-						<option value="hw">Homework</option>
-						<option value="Assignment">Assignment</option>
-						<option value="Exam">Exam</option>
-					</select>
-				</td>
-			</tr>
-		</table>
+		{% if isChosen == 1 %}
+		<form action="/student/ask" method="post">
+			<p>Select an Instructor:
+				<select name="instructor">
+					{% for i in instructors %}
+					<option value="{{i.get().ePantherID}}">{{i.get().ePantherID}}</option>
+					{% endfor %}
+				</select>
+			</p>
 
-		<br>
+			<p>Select a Topic:
+				<select name="topic">
+					<option value="Homework">Homework</option>
+					<option value="Assignment">Assignment</option>
+					<option value="Exam">Exam</option>
+				</select>
+			</p>
 
-		<textarea name="textbox" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>
-		<input type="submit">
-	</form>
+			<br>
 
-
-
+			<input type="text" name="hiddencourse" value="{{hiddencourse}}" hidden>
+			<textarea name="body" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>
+			<input type="submit" value="Submit">
+		</form>
+		{% endif %}
 </body>
 </html>

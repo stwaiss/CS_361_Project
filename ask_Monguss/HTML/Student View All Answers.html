@@ -25,41 +25,34 @@
 		<table class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
-					<th>#</th>
+					<th>Course #</th>
 					<th>Question</th>
 					<th>Answer</th>
-					<th>Date Answered</th>
+					<th>Date Submitted</th>
 				</tr>
 			</thead>
 
 			<tbody>
+				{% for q in questions %}
 				<tr>
-					<td>1</td>
-					<td>Is there a source code level debugger with breakpoints, single-stepping, etc.?</td>
 					<td>
-						<p>
-							Yes.
-						</p>
-						<p>
-							The pdb module is a simple but adequate console-mode debugger for Python. It is part of the standard Python library, and is documented in the Library Reference Manual. You can also write your own debugger by using the code for pdb as an example.
-						</p>
+						{{q.course.get().name}}
 					</td>
-					<td>October 10th, 2016 - 1:34pm</td>
-				</tr>
 
-				<tr>
-					<td>2</td>
-					<td>What are the rules for local and global variables in Python?</td>
 					<td>
-						<p>
-							In Python, variables that are only referenced inside a function are implicitly global. If a variable is assigned a value anywhere within the body of the function, it is assumed to be a local unless explicitly declared as global.
-						</p>
-						<p>
-							Though a bit surprising at first, a moment to consider the following would explains this. On one hand, requiring global for assigned variables provides a bar against unintended side-effects. On the other hand, if global was required for all global references, you would be using global all the time. You would have to declare as global every reference to a built-in function or to a component of an imported module. This clutter would defeat the usefulness of the global declaration for identifying side-effects.
-						</p>
+						{{q.body}}
 					</td>
-					<td>October 2nd, 2016 - 11:53am</td>
+
+					<td>
+						Insert Answer
+					</td>
+
+					<td>
+						{{q.timestamp.strftime('%m-%d-%Y')}}
+					</td>
+
 				</tr>
+				{% endfor %}
 			</tbody>
 		</table>
 	</div>

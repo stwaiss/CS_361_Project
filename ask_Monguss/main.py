@@ -243,19 +243,36 @@ class StudentAskHandler(webapp2.RequestHandler):
         if len(students) != 0:
             curStudent = students[0]
 
-            values = {
-                'username': curStudent.ePantherID,
-                'course': curStudent.courses
-                # 'instructor': curStudent.instructor
-            }
+            if self.request.get('course') == "":
+                values = {
+                    'username': curStudent.ePantherID,
+                    'course': curStudent.courses,
+                    'isChosen': 0
+                    # 'instructor': curStudent.instructor
+                }
 
-            template = JINJA_ENVIRONMENT.get_template('HTML/Student Question Submission Form.html')
-            self.response.write(template.render(values))
+                template = JINJA_ENVIRONMENT.get_template('HTML/Student Question Submission Form.html')
+                self.response.write(template.render(values))
+
+            else:
+                course_name = self.request.get('course')
+                course = Course.query(Course.name == course_name).fetch()[0]
+                values = {
+                    'username': curStudent.ePantherID,
+                    'course': curStudent.courses,
+                    'isChosen': 1,
+                    'instructors': course.instructors,
+                    'hiddencourse': course_name
+                }
+                template = JINJA_ENVIRONMENT.get_template('HTML/Student Question Submission Form.html')
+                self.response.write(template.render(values))
 
         # else redirect to login page
         else:
             self.redirect('/')
 
+
+    # .strftime('%m-%d-%Y')
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
@@ -263,21 +280,28 @@ class StudentAskHandler(webapp2.RequestHandler):
 
         # if cookie is correct, render page
         if len(students) != 0:
-            q = Question(str(self.request.get('textbox')))
-            q.student = self.request.get(name)
-            q.instructor = self.request.get('instructor')
-            q.timestamp = datetime.datetime.now().strftime('%m-%d-%Y')
+            body = self.request.get('body')
+            topic = self.request.get('topic')
+            student_key = students[0].key
+            instructor_name = self.request.get('instructor')
+            instructor_key = User.query(User.ePantherID == instructor_name).fetch()[0].key
+            time = datetime.datetime.now()
+            course_name = self.request.get('hiddencourse')
+            course_key = Course.query(Course.name == course_name).fetch()[0].key
+            q = Question(body=body, topic=topic, student=student_key, instructor=instructor_key, course=course_key, timestamp=time)
 
             # put question to datastore
             q_key = q.put()
 
             # add question to student's list
-            name.questions.append(q_key)
-            name.put()
+            curStudent = User.query(User.ePantherID == name).fetch()[0]
+            curStudent.questions.append(q_key)
+            curStudent.put()
 
             # add question to course list
-            course = Course.query(Course.name == self.request.get('course'))[0]
+            course = Course.query(Course.name == self.request.get('hiddencourse')).fetch()[0]
             course.questions.append(q_key)
+            course.put()
 
             self.redirect('/student')
 
@@ -334,8 +358,11 @@ class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
         # if cookie is correct, render page
         if len(students) != 0:
             curStudent = students[0]
+            question_query = Question.query(Question.student == curStudent.key)
+            questions = question_query.fetch()
             values = {
                 "username": curStudent.ePantherID,
+                "questions": questions
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Student View All Answers.html')
             self.response.write(template.render(values))
@@ -483,7 +510,7 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
             self.redirect('/')
 
 
-class InstructorDeleteHandler(webapp2.RequestHandler):
+class InstructorFaqDeleteHandler(webapp2.RequestHandler):
     def get(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
@@ -751,7 +778,7 @@ app = webapp2.WSGIApplication([
     ('/instructor/view_all', InstructorViewAllQuestionsHandler),
     ('/instructor/faq', InstructorFaqHandler),
     ('/instructor/faq/faq_add', InstructorFaqAddHandler),
-    ('/instructor/faq/faq_delete', InstructorDeleteHandler),
+    ('/instructor/faq/faq_delete', InstructorFaqDeleteHandler),
     ('/ADMIN', ADMINHandler),
     ('/ADMIN/create_user', ADMINAccountCreationHandler),
     ('/ADMIN/create_course', ADMINCourseCreationHandler)
