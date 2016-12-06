@@ -158,7 +158,6 @@ class AllFAQHandler(webapp2.RequestHandler):
             self.response.write(template.render(values))
 
 
-
 class ChangePasswordHandler(webapp2.RequestHandler):
     def get(self):
         name = self.request.cookies.get('name')
@@ -563,7 +562,7 @@ class ADMINHandler(webapp2.RequestHandler):
             numberOfStudents = User.query(User.isInstructor == 0).count()
             numberOfInstructors = User.query(User.isInstructor == 1).count()
             numberOfCourses = Course.query().count()
-            studentInstructorRatio = numberOfStudents / numberOfInstructors
+            studentInstructorRatio = round(float(numberOfStudents)/float(numberOfInstructors), 2)
 
             values = {
                 "username": name,
