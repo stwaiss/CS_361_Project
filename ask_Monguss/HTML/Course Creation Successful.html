@@ -12,8 +12,11 @@
 
         <table>
             <tr>
+                <th><h4>Instructors</h4></th>
+                <th><h4>Students</h4></th>
+            </tr>
+            <tr>
                 <td>
-                    <h4>Instructors</h4>
                     <ul>
                         {% for i in addedInstructors %}
                         <li>{{i}}</li>
@@ -22,7 +25,6 @@
                 </td>
 
                 <td>
-                    <h4>Students</h4>
                     <ul>
                         {% for s in addedStudents %}
                         <li>{{s}}</li>

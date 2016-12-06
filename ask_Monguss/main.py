@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# .strftime('%m-%d-%Y')
+
 import webapp2
 import jinja2
 import os
@@ -281,8 +283,6 @@ class StudentAskHandler(webapp2.RequestHandler):
         else:
             self.redirect('/')
 
-
-    # .strftime('%m-%d-%Y')
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
@@ -421,13 +421,12 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
                     "isChosen": 0
                 }
             else:
-                selected_course_list = Course.query(Course.name == chosenCourse).fetch()
-                selected_course = selected_course_list[0]
+                selected_course = Course.query(Course.name == chosenCourse).fetch()[0]
                 values = {
                     "username": curInstructor.ePantherID,
                     "courses": curInstructor.courses,
                     "isChosen": 1,
-                    "selected_course": selected_course
+                    "courseQuestions": selected_course
                 }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
             self.response.write(template.render(values))
@@ -600,7 +599,7 @@ class ADMINHandler(webapp2.RequestHandler):
             numberOfStudents = User.query(User.isInstructor == 0).count()
             numberOfInstructors = User.query(User.isInstructor == 1).count()
             numberOfCourses = Course.query().count()
-            studentInstructorRatio = round(float(numberOfStudents)/float(numberOfInstructors), 2)
+            studentInstructorRatio = round(float(numberOfStudents)/float(numberOfInstructors), 3)
 
             totalQuestionsCount = Question.query().count()
             answeredQuestionsCount = Question.query(Question.answer != "").count()

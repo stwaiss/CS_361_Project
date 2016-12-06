@@ -28,26 +28,29 @@
 		</form>
 
 		{% if isChosen == 1 %}
-		<table width="100%">
-				<thead>
+		<table>
+			<thead>
+				<tr>
+                    <td colspan="2" align="center">
+                        <h4>{{courseQuestions.name}}</h4>
+                    </td>
+                </tr>
+				<tr>
+					<th>Question</th>
+					<th>Submitted by</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for q in courseQuestions.questions %}
 					<tr>
-						<th>Question</th>
-						<th>Submitted by</th>
-						<th>Date</th>
+						<td>{{q.get().body}}</td>
+						<td>{{q.get().student.get().ePantherID}}</td>
+						<td>{{q.get().timestamp.strftime('%m-%d-%Y')}}</td>
 					</tr>
-				</thead>
-				<tbody>
-					{% for q in selected_course.questions %}
-						<tr>
-							<td> <b> {{ q.body }} </b> </td>
-							<td> {{ q.student }} </td>
-							<td> </td>
-						</tr>
-						<tr>
-							<td colspan="3"> {{ q.answer }} </td>
-						</tr>
-					{% endfor %}
-				</tbody>
+				{% endfor %}
+			</tbody>
 		</table>
 		<br />
 		{% endif %}
