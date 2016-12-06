@@ -391,8 +391,18 @@ class InstructorLandingPageHandler(webapp2.RequestHandler):
         # if cookie is correct, render page
         if len(instructors) != 0:
             curInstructor = instructors[0]
+
+            # landing page statistics
+            totalQuestions = Question.query(Question.instructor == curInstructor.key).count()
+            answeredQuestions = Question.query(Question.instructor == curInstructor.key, Question.answer != "").count()
+            unansweredQuestions = totalQuestions - answeredQuestions
+
+
             values = {
                 "username": curInstructor.ePantherID,
+                "totalQuestions": totalQuestions,
+                "answeredQuestions": answeredQuestions,
+                "unansweredQuestions": unansweredQuestions
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor Home.html')
             self.response.write(template.render(values))

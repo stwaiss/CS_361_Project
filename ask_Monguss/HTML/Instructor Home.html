@@ -6,14 +6,16 @@
 	</head>
 
 	<body>
-		<div id="menubar">
-			<b>{{username}}</b> //
-			<a href="/instructor">Home</a> -
-			<a href="/instructor/view_all">Questions</a> -
-			<a href="/instructor/faq">FAQ</a> -
-			<a href="/change_password">Change Password</a> -
-			<a href="/logout">Log Out</a>
-		</div>
+		<div>
+            <ul>
+                <li class="username">{{username}}</a></li>
+                <li><a href="/instructor">Home</a></li>
+                <li><a href="/instructor/view_all">Questions</a></li>
+                <li><a href="/instructor/faq">FAQ</a></li>
+                <li><a href="/change_password">Change Password</a></li>
+                <li><a href="/logout">Log Out</a></li>
+            </ul>
+        </div>
 
 		<div id="content">
 			<div id="inst_home">
@@ -32,16 +34,16 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td>Unanswered</td>
-								<td align="center">102 (NYI)</td>
+								<td>Total</td>
+								<td align="center">{{totalQuestions}}</td>
 							</tr>
 							<tr>
-								<td>In draft</td>
-								<td align="center">12 (NYI)</td>
+								<td>Unanswered</td>
+								<td align="center">{{unansweredQuestions}}</td>
 							</tr>
 							<tr>
 								<td>Answered</td>
-								<td align="center">5 (NYI)</td>
+								<td align="center">{{answeredQuestions}}</td>
 							</tr>
 						</tbody>
 					</table>
