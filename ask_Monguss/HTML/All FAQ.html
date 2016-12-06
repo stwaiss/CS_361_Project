@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All FAQ</title>
+    <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+</head>
+<body>
+
+    <form action="/" method="get">
+		<input type="submit" value="Log In" align="Right">
+	</form>
+
+    <div id="content">
+        <h1>View all course FAQs</h1>
+
+        <form action="/all_faq" method="get">
+            <label>Select a Course: </label>
+            <select name="course">
+                {% for c in allCourses %}
+                <option value="{{c.name}}">{{c.name}}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Update">
+        </form>
+
+
+
+
+        {% if isChosen == 1 %}
+            <br>
+            <hr>
+            <br>
+            <div>
+            <table align="center">
+                <tr>
+                    <td colspan="2" align="center">
+                        <h4>{{courseName}}</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Question</th>
+                    <th>Answer</th>
+                </tr>
+
+                {% for q in faq %}
+
+                <tr>
+                    <td>{{ q.get().question }}</td>
+                    <td>{{ q.get().answer }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -3,6 +3,10 @@ html {
 	background-size: cover;
 }
 
+body{
+    font-family: Verdana, sans-serif;
+}
+
 #menubar {
 	background-color: #fafafa;
 	position: absolute;

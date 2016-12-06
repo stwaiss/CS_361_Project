@@ -133,6 +133,32 @@ class LogoutHandler(webapp2.RequestHandler):
         self.response.write(template.render(value))
 
 
+class AllFAQHandler(webapp2.RequestHandler):
+    # only one of two screens that doesn't use user authentication
+    def get(self):
+        if self.request.get('course') == "":
+            allCourses = Course.query().fetch()
+
+            values = {
+                "allCourses": allCourses
+            }
+
+            template = JINJA_ENVIRONMENT.get_template('HTML/All FAQ.html')
+            self.response.write(template.render(values))
+
+        else:
+            course = Course.query(Course.name == self.request.get('course')).fetch()[0]
+
+            values = {
+                "isChosen": 1,
+                "courseName": self.request.get('course'),
+                "faq": course.FAQ
+            }
+            template = JINJA_ENVIRONMENT.get_template('HTML/All FAQ.html')
+            self.response.write(template.render(values))
+
+
+
 class ChangePasswordHandler(webapp2.RequestHandler):
     def get(self):
         name = self.request.cookies.get('name')
@@ -359,7 +385,7 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
                     "isChosen": 0
                 }
             else:
-                selected_course_list = Course.query(ndb.GenericProperty('name') == chosenCourse).fetch()
+                selected_course_list = Course.query(Course.name == chosenCourse).fetch()
                 selected_course = selected_course_list[0]
                 values = {
                     "username": curInstructor.ePantherID,
@@ -526,6 +552,7 @@ class InstructorDeleteHandler(webapp2.RequestHandler):
         # else redirect to login page
         else:
             self.redirect('/')
+
 
 class ADMINHandler(webapp2.RequestHandler):
     def get(self):
@@ -715,6 +742,7 @@ app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
     ('/logout', LogoutHandler),
+    ('/all_faq', AllFAQHandler),
     ('/change_password',ChangePasswordHandler),
     ('/student', StudentLandingPageHandler),
     ('/student/ask', StudentAskHandler),

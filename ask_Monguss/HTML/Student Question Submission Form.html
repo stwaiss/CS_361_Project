@@ -4,6 +4,7 @@
 	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
 	<link rel="stylesheet" type="text/css" href="../CSS/Student_Submission_Form.css">
 </head>
+
 <body>
 		<div id="menubar">
 			<b>{{username}}</b> //
@@ -18,36 +19,54 @@
 
 	<p> To view the Frequently Asked Questions, click here: <a href="/student/faq">FAQ List</a> </p> <br>
 	
-
-	<p>Select your course:
-		<select name="course">
-			<option value="default">Course</option>
-			{% for c in course %}
-			<option value="{{c.get().name}}">{{c.get().name}}</option>
-			{% endfor %}
-		</select> 
-	</p>
-
-
-	<p>Select your instructor: <select name="instructor">
-			<option value="instructor">Instructor</option>
-			{% for i in instructor %}
-			<option value="{{i._ePantherID}}">{{i._ePantherID}}</option>
-			{% endfor %}
-		</select> 
-	</p>
-
-	<p>Select topic of question: <select name="topic">
-			<option value="topics">Topic</option>
-			<option value="hw">Homework</option>
-			<option value="Assignment">Assignment</option>
-			<option value="Exam">Exam</option>
-		</select> 
-	</p>
-
 	<form method="POST">
-		<input type="hidden" value="{{ user }}">
-		<textarea name="textbox" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>	
+		<table>
+			<tr>
+				<td>
+					Select your course
+				</td>
+				<td>
+					<select name="course">
+						<option value="default">Course</option>
+						{% for c in course %}
+						<option value="{{c.get().name}}">{{c.get().name}}</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					Select your instructor
+				</td>
+				<td>
+					<select name="instructor">
+						<option value="instructor">Instructor</option>
+						{% for i in instructor %}
+						<option value="{{i._ePantherID}}">{{i._ePantherID}}</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					Select topic of question
+				</td>
+				<td>
+					<select name="topic">
+						<option value="topics">Topic</option>
+						<option value="hw">Homework</option>
+						<option value="Assignment">Assignment</option>
+						<option value="Exam">Exam</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+
+		<br>
+
+		<textarea name="textbox" cols="50" rows="5" placeholder="Ask Question"></textarea> <br>
 		<input type="submit">
 	</form>
 
