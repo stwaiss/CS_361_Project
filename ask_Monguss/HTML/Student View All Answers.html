@@ -5,8 +5,12 @@
 	</title>
 
 	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
-	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
-	<!--<link rel="stylesheet" type="text/css" href="Student View All Answers.css">-->
+
+	<style>
+		td{
+			text-align: center;
+		}
+	</style>
 
 </head>
 <body>
@@ -44,7 +48,13 @@
 					</td>
 
 					<td>
-						Insert Answer
+						{% if q.answer == "" %}
+						(Not yet answered)
+						{% endif %}
+
+						{% if q.answer != "" %}
+						{{q.answer}}
+						{% endif %}
 					</td>
 
 					<td>

@@ -11,6 +11,7 @@ class Question(ndb.Model):
     instructor = ndb.KeyProperty(required=True)
     course = ndb.KeyProperty(required=True)
 
+    answer = ndb.StringProperty()
     faqAttachments = ndb.KeyProperty(repeated=True)
-    replies = ndb.StructuredProperty(Reply)
+    replies = ndb.StructuredProperty(Reply, repeated=True)
     timestamp = ndb.DateTimeProperty()

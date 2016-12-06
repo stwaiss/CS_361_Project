@@ -288,7 +288,7 @@ class StudentAskHandler(webapp2.RequestHandler):
             time = datetime.datetime.now()
             course_name = self.request.get('hiddencourse')
             course_key = Course.query(Course.name == course_name).fetch()[0].key
-            q = Question(body=body, topic=topic, student=student_key, instructor=instructor_key, course=course_key, timestamp=time)
+            q = Question(body=body, topic=topic, student=student_key, instructor=instructor_key, course=course_key, timestamp=time, answer="")
 
             # put question to datastore
             q_key = q.put()
