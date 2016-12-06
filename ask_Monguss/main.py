@@ -166,9 +166,11 @@ class ChangePasswordHandler(webapp2.RequestHandler):
         all_users = User.query(User.ePantherID == name).fetch()
 
         if len(all_users) != 0:
+            curUser = all_users[0]
             value = {
                 'username': name,
-                'incorrectPassword': 0
+                'incorrectPassword': 0,
+                'isInstructor': curUser.isInstructor
             }
 
             template = JINJA_ENVIRONMENT.get_template('HTML/Change Password.html')
