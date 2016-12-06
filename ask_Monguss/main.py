@@ -222,8 +222,18 @@ class StudentLandingPageHandler(webapp2.RequestHandler):
         #if cookie is correct, render page
         if len(students) != 0:
             curStudent = students[0]
+
+            allQuestionsQuery = Question.query(Question.student == curStudent.key)
+            allQuestionsCount = allQuestionsQuery.count()
+
+            answeredQuestionsCount = Question.query(Question.student == curStudent.key, Question.answer != "").count()
+            unansweredQuestionsCount = allQuestionsCount - answeredQuestionsCount
+
             values = {
-                "username": curStudent.ePantherID
+                "username": curStudent.ePantherID,
+                "totalQuestions": allQuestionsCount,
+                "answeredQuestions": answeredQuestionsCount,
+                "unansweredQuestions": unansweredQuestionsCount
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Student Home.html')
             self.response.write(template.render(values))
@@ -586,17 +596,24 @@ class ADMINHandler(webapp2.RequestHandler):
         name = self.request.cookies.get("name")
         # if cookie is correct, render page
         if name == "ADMIN":
+            # various calculations for statistics
             numberOfStudents = User.query(User.isInstructor == 0).count()
             numberOfInstructors = User.query(User.isInstructor == 1).count()
             numberOfCourses = Course.query().count()
             studentInstructorRatio = round(float(numberOfStudents)/float(numberOfInstructors), 2)
 
+            totalQuestionsCount = Question.query().count()
+            answeredQuestionsCount = Question.query(Question.answer != "").count()
+            unansweredQuestionsCount = totalQuestionsCount - answeredQuestionsCount
             values = {
                 "username": name,
                 "numberOfStudents": numberOfStudents,
                 "numberOfInstructors": numberOfInstructors,
                 "numberOfCourses": numberOfCourses,
-                "studentInstructorRatio": studentInstructorRatio
+                "studentInstructorRatio": studentInstructorRatio,
+                "totalQuestions": totalQuestionsCount,
+                "answeredQuestions": answeredQuestionsCount,
+                "unansweredQuestions": unansweredQuestionsCount
             }
 
             template = JINJA_ENVIRONMENT.get_template('HTML/ADMIN.html')

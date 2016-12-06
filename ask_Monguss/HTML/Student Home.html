@@ -14,30 +14,50 @@
 			<a href="/change_password">Change Password</a> -
 			<a href="/logout">Log Out</a>
 		</div>
+
 		<div id="content">
-		<div id="stud_questions">
+			<div id="greeting">
+				<h2>Greetings, {{username}}!</h2>
+			</div>
+
+			<br>
+
 			<table>
-				<thead>
-					<tr>
-						<th>Question</th>
-						<th>Submit Date</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for q in questions %}
-					<tr>
-						<td>{{ q._body }}</td>
-						<td>{{ q._timestamp }}</td>
-						<td>Unanswered (NYI)</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-			<center>
-			<form method="get" action="/student/ask">
-				<input type="submit" value="Ask a Question" />
-			</form></center>
+                <th>
+                    Description
+                </th>
+
+                <th>
+                    Value
+                </th>
+
+                <tr>
+                    <td>
+                        Total Questions you've Submitted
+                    </td>
+                    <td>
+                        {{totalQuestions}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Questions that have been Answered
+                    </td>
+                    <td>
+                        {{answeredQuestions}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Questions that are Unanswered
+                    </td>
+                    <td>
+                        {{unansweredQuestions}}
+                    </td>
+                </tr>
+            </table>
 		</div>
 		</div>
 	</body>
