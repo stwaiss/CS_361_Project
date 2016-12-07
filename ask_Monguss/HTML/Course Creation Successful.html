@@ -17,19 +17,15 @@
             </tr>
             <tr>
                 <td>
-                    <ul>
-                        {% for i in addedInstructors %}
-                        <li>{{i}}</li>
-                        {% endfor %}
-                    </ul>
+                    {% for i in addedInstructors %}
+                    <p>{{i}}</p>
+                    {% endfor %}
                 </td>
 
                 <td>
-                    <ul>
-                        {% for s in addedStudents %}
-                        <li>{{s}}</li>
-                        {% endfor %}
-                    </ul>
+                    {% for s in addedStudents %}
+                    <p>{{s}}</p>
+                    {% endfor %}
                 </td>
         </table>
 

@@ -1,8 +1,7 @@
 <!DOCTYPE <html>
 <head>
 	<title>Answer Student Question</title>
-	<link rel="stylesheet" type="text/css" href="CSS/Instructor_Give_Answer.css">
-	<link rel="stylesheet" type="text/css" href="CSS/main.css">
+	<link rel="stylesheet" type="text/css" href="../CSS/main.css">
 </head>
 <body>
 	<div>
@@ -17,29 +16,58 @@
 	</div>
 
 	<div id="content">
-		<table>
-			<tr>
-				<th>Answer Student Question</th>
-			</tr>
-			<tr>
-				<td>Is there a source code level debugger with breakpoints, single-stepping, etc.?</td>
-			</tr>
-			<tr>
-				<td>
-					<textarea name="textbox" cols="67" rows="5" placeholder="Answer Question"></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label>FAQ Number: </label> <select name="FAQd">
-					<option value="0">---</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-				</select>
-				</td>
-			</tr>	
-		</table>
-		<input type="submit">
+		<h1>Answer Student Questions</h1>
+		<form method="POST" action='/instructor/answer'>
+			<table>
+				<tr>
+					<td>
+						Submitted By
+					</td>
+					<td>
+						{{question.student.get().ePantherID}}
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Date Submitted
+					</td>
+
+					<td>
+						{{question.date_submitted.strftime('%m-%d-%Y')}}
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Topic
+					</td>
+					<td>
+						{{question.topic}}
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Question
+					</td>
+					<td>
+						{{question.body}}
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Answer
+					</td>
+					<td>
+						<textarea name="answer" rows="10" cols="50" placeholder="Answer question"></textarea>
+					</td>
+				</tr>
+			</table>
+			<input type="text" value="{{question.key.urlsafe()}}" name="question_key" hidden>
+			<input type='submit' value='Submit'/>
+		</form>
+	</div>
 
 </body>
 </html>
