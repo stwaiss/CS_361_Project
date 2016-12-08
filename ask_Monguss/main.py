@@ -131,7 +131,7 @@ class LogoutHandler(webapp2.RequestHandler):
             'username': name
         }
 
-        template = JINJA_ENVIRONMENT.get_template('HTML/Logout.html')
+        template = JINJA_ENVIRONMENT.get_template('HTML/logout.html')
         self.response.write(template.render(value))
 
 
