@@ -149,15 +149,23 @@ class AllFAQHandler(webapp2.RequestHandler):
             self.response.write(template.render(values))
 
         else:
+            allCourses = Course.query().fetch()
             course = Course.query(Course.name == self.request.get('course')).fetch()[0]
 
             values = {
+                "allCourses": allCourses,
                 "isChosen": 1,
                 "courseName": self.request.get('course'),
                 "faq": course.FAQ
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/All FAQ.html')
             self.response.write(template.render(values))
+
+
+class AboutHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('HTML/About.html')
+        self.response.write(template.render())
 
 
 class ChangePasswordHandler(webapp2.RequestHandler):
@@ -849,6 +857,7 @@ app = webapp2.WSGIApplication([
     ('/login', LoginHandler),
     ('/logout', LogoutHandler),
     ('/all_faq', AllFAQHandler),
+    ('/about', AboutHandler),
     ('/change_password',ChangePasswordHandler),
     ('/student', StudentLandingPageHandler),
     ('/student/ask', StudentAskHandler),

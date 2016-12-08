@@ -19,6 +19,9 @@
                 margin-left: 245px;
                 margin-top: 10px;
             }
+            tr:nth-child(even) {
+                background: #FFF
+            }
         </style>
     </head>
 
@@ -40,15 +43,40 @@
                 <p style="color:red"><b>"{{username}}" already exists in system</b></p>
                 {% endif %}
                 <form method="post" name ="newAccountForm">
-                    <label>New Username:</label><input type="text" class="loginbox" name="ePantherID" required="true">
-                    <br>
-                    <label>Password:</label><input type="text" name="password" required="true">
-                    <br>
-                    <label>Credential Type</label>
-                    <br>
-                    Instructor:<input type="radio" name="credential" value = "instructor" required="true">
-                    Student:<input type="radio" name="credential" value = "student" required="true">
-                    <br>
+                    <table>
+                        <tr>
+                            <td>
+                                New Username:
+                            </td>
+                            <td>
+                                <input type="text" class="loginbox" name="ePantherID" required="true">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Password:
+                            </td>
+                            <td>
+                                <input type="text" name="password" required="true">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td rowspan="2">
+                                Credential Type:
+                            </td>
+                            <td>
+                                Instructor<input type="radio" name="credential" value = "instructor" required="true">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Student<input type="radio" name="credential" value = "student" required="true">
+                            </td>
+                        </tr>
+                    </table>
+
                     <input class="button" type="submit">
                 </form>
             </center>

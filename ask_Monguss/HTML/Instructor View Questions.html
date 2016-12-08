@@ -62,12 +62,14 @@
 						<td>{{q.get().date_answered.strftime('%m-%d-%Y')}}</td>
 						{% endif %}
 						<td>
+							{% if q.get().answer == "" %}
 							<center>
 								<form action="/instructor/answer" method="get">
 									<input name="question_key" type="text" value="{{q.get().key.urlsafe()}}" hidden>
 									<input type="submit" value="Answer">
 								</form>
 							</center>
+							{% endif %}
 						</td>
 					</tr>
 				{% endfor %}
