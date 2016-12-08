@@ -300,7 +300,7 @@ class StudentAskHandler(webapp2.RequestHandler):
             time = datetime.datetime.now()
             course_name = self.request.get('hiddencourse')
             course_key = Course.query(Course.name == course_name).fetch()[0].key
-            q = Question(body=body, topic=topic, student=student_key, instructor=instructor_key, course=course_key, timestamp=time, answer="")
+            q = Question(body=body, topic=topic, student=student_key, instructor=instructor_key, course=course_key, date_submitted=time, answer="")
 
             # put question to datastore
             q_key = q.put()
@@ -442,6 +442,58 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
                 }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
             self.response.write(template.render(values))
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+
+class InstructorAnswerHandler(webapp2.RequestHandler):
+    def get(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
+
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            curInstructor = instructors[0]
+
+            # get question key from page and turn back into question entity
+            question_key_string = self.request.get('question_key')
+            question_key = ndb.Key(urlsafe=question_key_string)
+            question = question_key.get()
+
+            values = {
+                "username": curInstructor.ePantherID,
+                "question": question
+            }
+            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor Give Answer.html')
+            self.response.write(template.render(values))
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+    def post(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
+
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            curInstructor = instructors[0]
+
+            # get question key from page and turn back into question entity
+            question_key_string = self.request.get('question_key')
+            question_key = ndb.Key(urlsafe=question_key_string)
+            question = question_key.get()
+
+            question.answer = self.request.get('answer')
+            question.date_answered = datetime.datetime.now()
+            question.put()
+
+            self.redirect('/instructor/view_all')
+
 
         # else redirect to login page
         else:
@@ -617,7 +669,7 @@ class ADMINHandler(webapp2.RequestHandler):
             answeredQuestionsCount = Question.query(Question.answer != "").count()
             unansweredQuestionsCount = totalQuestionsCount - answeredQuestionsCount
             values = {
-                "username": name,
+                "username": "ADMINISTRATOR",
                 "numberOfStudents": numberOfStudents,
                 "numberOfInstructors": numberOfInstructors,
                 "numberOfCourses": numberOfCourses,
@@ -804,6 +856,7 @@ app = webapp2.WSGIApplication([
     ('/student/view_all', StudentViewAllQuestionsHandler),
     ('/instructor', InstructorLandingPageHandler),
     ('/instructor/view_all', InstructorViewAllQuestionsHandler),
+    ('/instructor/answer', InstructorAnswerHandler),
     ('/instructor/faq', InstructorFaqHandler),
     ('/instructor/faq/faq_add', InstructorFaqAddHandler),
     ('/instructor/faq/faq_delete', InstructorFaqDeleteHandler),
