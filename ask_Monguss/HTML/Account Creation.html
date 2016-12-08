@@ -37,49 +37,49 @@
         </div>
 
         <div id="content">
-            <center>
-                <h1>Create a New User</h1>
-                {% if userAlreadyExists == 1 %}
-                <p style="color:red"><b>"{{username}}" already exists in system</b></p>
-                {% endif %}
-                <form method="post" name ="newAccountForm">
-                    <table>
-                        <tr>
-                            <td>
-                                New Username:
-                            </td>
-                            <td>
-                                <input type="text" class="loginbox" name="ePantherID" required="true">
-                            </td>
-                        </tr>
+            <h1>Create a New User</h1>
+            {% if userAlreadyExists == 1 %}
+            <p style="color:red"><b>"{{username}}" already exists in system</b></p>
+            {% endif %}
+            <form method="post" name ="newAccountForm">
+                <table>
+                    <tr>
+                        <td>
+                            New Username:
+                        </td>
+                        <td>
+                            <input type="text" class="loginbox" name="ePantherID" required="true">
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td>
-                                Password:
-                            </td>
-                            <td>
-                                <input type="text" name="password" required="true">
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            Password:
+                        </td>
+                        <td>
+                            <input type="text" name="password" required="true">
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td rowspan="2">
-                                Credential Type:
-                            </td>
-                            <td>
-                                Instructor<input type="radio" name="credential" value = "instructor" required="true">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Student<input type="radio" name="credential" value = "student" required="true">
-                            </td>
-                        </tr>
-                    </table>
+                    <tr>
+                        <td rowspan="2">
+                            Credential Type:
+                        </td>
+                        <td>
+                            Instructor<input type="radio" name="credential" value = "instructor" required="true">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Student<input type="radio" name="credential" value = "student" required="true">
+                        </td>
+                    </tr>
+                </table>
 
-                    <input class="button" type="submit">
-                </form>
-            </center>
+                <br>
+
+                <input type="submit" value="Submit">
+            </form>
         </div>
     </body>
 </html>

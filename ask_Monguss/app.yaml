@@ -1,5 +1,5 @@
-application: studentquestions
-version: 1
+application: askmonguss
+version: 7
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -10,7 +10,7 @@ handlers:
   upload: favicon\.ico
 
 - url: /CSS
-  static_dir: css
+  static_dir: CSS
 
 - url: .*
   script: main.app

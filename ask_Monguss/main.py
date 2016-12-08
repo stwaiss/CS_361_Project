@@ -804,43 +804,102 @@ class ADMINCourseCreationHandler(webapp2.RequestHandler):
         # check for correct cookie
         name = self.request.cookies.get("name")
         if name == "ADMIN":
+            # create course exists flag
+            preexisting = 0
+
             # store form data
             course_ID = self.request.get('courseID')
             selected_instructors_list = self.request.get_all('instructors')
             selected_students_list = self.request.get_all('students')
 
-            # create new course and retain key
-            course_key = Course(name=course_ID).put()
-            course = course_key.get()
+            if len(selected_students_list) == 0 or len(selected_instructors_list) == 0:
+                all_instructors = User.query(User.isInstructor == 1).fetch()
+                all_students = User.query(User.isInstructor == 0).fetch()
 
-            # iterate over check boxes to add instructors to courses
-            for i in selected_instructors_list:
-                instructor = User.query(User.ePantherID == i).fetch()[0]
+                values = {
+                    "username": "ADMINISTRATOR",
+                    "all_instructors": all_instructors,
+                    "all_students": all_students,
+                    "empty_checkboxes": 1,
+                }
 
-                # add course key to instructor and put back
-                instructor.courses.append(course_key)
-                instructor.put()
+                template = JINJA_ENVIRONMENT.get_template('HTML/Course Creation.html')
+                self.response.write(template.render(values))
+                return
 
-                # add instructor key to course and put back
-                course.instructors.append(instructor.key)
-                course.put()
+            # check if course exists
+            existingCourseList = Course.query(Course.name == course_ID).fetch()
 
-            # iterate over check boxes to add students to courses
-            for s in selected_students_list:
-                student = User.query(User.ePantherID == s).fetch()[0]
+            if len(existingCourseList) != 0:
+                preexisting = 1
+                existingCourse = existingCourseList[0]
 
-                # add course key to student and put back
-                student.courses.append(course_key)
-                student.put()
+                # iterate over check boxes to check if already added or to add new instructors to courses
+                for i in selected_instructors_list:
+                    # pull instructor from list
+                    instructor = User.query(User.ePantherID == i).fetch()[0]
 
-                # add student key to course and put back
-                course.students.append(student.key)
-                course.put()
+                    if instructor.key not in existingCourse.instructors:
+                        # add course key to instructor and put back
+                        instructor.courses.append(existingCourse.key)
+                        instructor.put()
 
+                        # add instructor key to course and put back
+                        existingCourse.instructors.append(instructor.key)
+                        existingCourse.put()
+
+
+                # iterate over check boxes to add students to courses
+                for s in selected_students_list:
+                    student = User.query(User.ePantherID == s).fetch()[0]
+
+                    if student.key not in existingCourse.students:
+                        # add course key to student and put back
+                        student.courses.append(existingCourse.key)
+                        student.put()
+
+                        # add student key to course and put back
+                        existingCourse.students.append(student.key)
+                        existingCourse.put()
+
+            else:
+                # create new course and retain key
+                course_key = Course(name=course_ID).put()
+                course = course_key.get()
+
+                # iterate over check boxes to add instructors to courses
+                for i in selected_instructors_list:
+                    instructor = User.query(User.ePantherID == i).fetch()[0]
+
+                    # add course key to instructor and put back
+                    instructor.courses.append(course_key)
+                    instructor.put()
+
+                    # add instructor key to course and put back
+                    course.instructors.append(instructor.key)
+                    course.put()
+
+                # iterate over check boxes to add students to courses
+                for s in selected_students_list:
+                    student = User.query(User.ePantherID == s).fetch()[0]
+
+                    # add course key to student and put back
+                    student.courses.append(course_key)
+                    student.put()
+
+                    # add student key to course and put back
+                    course.students.append(student.key)
+                    course.put()
+
+            final_instructors_list = Course.query(Course.name == course_ID).fetch()[0].instructors
+            final_students_list = Course.query(Course.name == course_ID).fetch()[0].students
             values = {
                 "courseID": course_ID,
+                "preexisting": preexisting,
                 "addedStudents": selected_students_list,
-                "addedInstructors": selected_instructors_list
+                "addedInstructors": selected_instructors_list,
+                "allStudents": final_students_list,
+                "allInstructors": final_instructors_list
             }
 
             template = JINJA_ENVIRONMENT.get_template('HTML/Course Creation Successful.html')
@@ -872,4 +931,4 @@ app = webapp2.WSGIApplication([
     ('/ADMIN', ADMINHandler),
     ('/ADMIN/create_user', ADMINAccountCreationHandler),
     ('/ADMIN/create_course', ADMINCourseCreationHandler)
-], debug=True)
+], debug=False)
