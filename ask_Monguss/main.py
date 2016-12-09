@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# .strftime('%m-%d-%Y')
 
 import webapp2
 import jinja2
@@ -23,9 +22,6 @@ from user import User
 from course import Course
 from faq import FAQ
 from question import Question
-from timestamp import Timestamp
-from reply import Reply
-import time
 import datetime
 from google.appengine.ext import ndb
 
