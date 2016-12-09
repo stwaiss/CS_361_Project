@@ -23,53 +23,64 @@
                 <li><a href="/logout">Log Out</a></li>
             </ul>
         </div>
-	<div id="content">
-		<h1>Frequently Asked Questions</h1>
 
-		<p>For the most part, if you have a question, your peers have that same question too. The table below shows questions that your instructor frequently recieves, and wants to share with you and your peers. Please take a look through the table before submitting any questions, as your question may have already been answered!
-		</p>
+		<div id="content">
+			<h1>Frequently Asked Questions</h1>
 
-		<br>
+			<p>
+				For the most part, if you have a question, your peers have that same question too. The table below shows questions that your instructor frequently recieves, and wants to share with you and your peers. Please take a look through the table before submitting any questions, as your question may have already been answered!
+			</p>
 
-		<form action="/instructor/faq" method="get">
-			<p>Select a course</p>
-			<select name="course">
-				{% for c in username.courses %}
-				<option value="{{c.get().name}}">{{c.get().name}}</option>
+
+			<a id='add' href="/instructor/faq/faq_add">Add a new item to the FAQ</a>
+
+
+			<br>
+
+			<form action="/instructor/faq" method="get">
+				<p>Select a course</p>
+				<select name="course">
+					{% for c in username.courses %}
+					<option value="{{c.get().name}}">{{c.get().name}}</option>
+					{% endfor %}
+				</select>
+				<input type="submit" value="Update">
+			</form>
+
+			{% if isChosen == 1 %}
+
+			<hr>
+
+			<div>
+			<table align="center">
+				<tr>
+					<td colspan="2" align="center">
+						<h4>{{courseName}}</h4>
+					</td>
+				</tr>
+				<tr>
+					<th>Question</th>
+					<th>Answer</th>
+					<th>Delete</th>
+				</tr>
+
+
+				{% for q in faq %}
+				<tr>
+					<td>{{ q.get().question }}</td>
+					<td>{{ q.get().answer }}</td>
+					<td align="center">
+						<form action="/instructor/faq/faq_delete" method="post">
+							<input name="faq_key" type="text" value="{{q.get().key.urlsafe()}}" hidden>
+							<input type="submit" value="Delete">
+					</form>
+					</td>
+				</tr>
 				{% endfor %}
-			</select>
-			<input type="submit" value="Update">
-		</form>
-
-		{% if isChosen == 1 %}
-
-        <hr>
-
-		<div>
-		<table align="center">
-			<tr>
-				<td colspan="2" align="center">
-					<h4>{{courseName}}</h4>
-				</td>
-			</tr>
-			<tr>
-				<th>Question</th>
-				<th>Answer</th>
-			</tr>
-
-
-			{% for q in faq %}
-			<tr>
-				<td>{{ q.get().question }}</td>
-				<td>{{ q.get().answer }}</td>
-			</tr>
-			{% endfor %}
-		</table>
+			</table>
+			{% endif %}
+			</div>
 		</div>
-			<a id='add' href="/instructor/faq/faq_add">Add</a>
-			<a id="delete" href="/instructor/faq/faq_delete">Delete</a>
-		</div>
-		{% endif %}
 </body>
 
 </HTML>

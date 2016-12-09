@@ -592,40 +592,6 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
 
 
 class InstructorFaqDeleteHandler(webapp2.RequestHandler):
-    def get(self):
-        # check for correct cookie
-        name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
-
-        # if cookie is correct, render page
-        if len(instructors) != 0:
-            # check if course dropdown has been selected
-            if self.request.get('course') == "":
-                curInstructor = instructors[0]
-                values = {
-                    "username": curInstructor,
-                    "courseIsChosen": 0
-                }
-                template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Delete.html')
-                self.response.write(template.render(values))
-
-            else:
-                curInstructor = instructors[0]
-                selected_course_name = self.request.get('course')
-                course = Course.query(Course.name == selected_course_name).fetch()[0]
-
-                values = {
-                    "username": curInstructor,
-                    "courseIsChosen": 1,
-                    "questions": course.FAQ
-                }
-                template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Delete.html')
-                self.response.write(template.render(values))
-
-        # else redirect to login page
-        else:
-            self.redirect('/')
-
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
@@ -635,26 +601,21 @@ class InstructorFaqDeleteHandler(webapp2.RequestHandler):
         if len(instructors) != 0:
             curInstructor = instructors[0]
 
-            if self.request.get('question') !="":
-                # delete faq item from the course faq item list
-                faq_to_delete = FAQ.query(FAQ.question == self.request.get('question')).fetch()[0]
-                course = faq_to_delete.course.get()
-                course.FAQ.remove(faq_to_delete.key)
-                course.put()
+            # get key from hidden field
+            faq_key_string = self.request.get('faq_key')
+            faq_key = ndb.Key(urlsafe=faq_key_string)
+            faq = faq_key.get()
 
-                # delete the actual faq item from the datastore
-                faq_to_delete.key.delete()
+            # delete faq entry from course
+            course = faq.course.get()
+            course.FAQ.remove(faq_key)
+            course.put()
 
-                self.redirect('/instructor/faq')
+            # delete faq item
+            faq_key.delete()
 
-            else:
-                values = {
-                    "noQuestionChosen": 1,
-                    "username": curInstructor,
-                    "courseIsChosen": 1
-                }
-                template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Delete.html')
-                self.response.write(template.render(values))
+            # redirect back to faq page
+            self.redirect('/instructor/faq')
 
         # else redirect to login page
         else:
@@ -931,4 +892,4 @@ app = webapp2.WSGIApplication([
     ('/ADMIN', ADMINHandler),
     ('/ADMIN/create_user', ADMINAccountCreationHandler),
     ('/ADMIN/create_course', ADMINCourseCreationHandler)
-], debug=False)
+], debug=True)
