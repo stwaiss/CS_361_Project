@@ -83,12 +83,12 @@ class LoginHandler(webapp2.RequestHandler):
             user = user_list[0]
 
             if user.isInstructor == 0:
-                self.response.set_cookie('name', self.postedUsername, path='/')
+                self.response.set_cookie('name', postedUsername, path='/')
                 self.redirect('/student')
                 return
 
             if user.isInstructor == 1:
-                self.response.set_cookie('name', self.postedUsername, path='/')
+                self.response.set_cookie('name', postedUsername, path='/')
                 self.redirect('/instructor')
                 return      
         
