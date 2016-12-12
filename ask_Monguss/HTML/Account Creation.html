@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Create a New Account</title>
-        <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+        <link rel="stylesheet" type="text/css" href="/CSS/main.css">
 
         <style>
             label{
@@ -19,36 +19,67 @@
                 margin-left: 245px;
                 margin-top: 10px;
             }
+            tr:nth-child(even) {
+                background: #FFF
+            }
         </style>
     </head>
 
     <body>
-		<div id="menubar">
-			<b>{{username}}</b> //
-            <a href="/ADMIN">Home</a> -
-            <a href="/ADMIN/create_user">Create New Users</a> -
-			<a href="/logout">Log Out</a>
-		</div>
+		<div>
+            <ul>
+                <li class="username">{{username}}</a></li>
+                <li><a href="/ADMIN">Home</a></li>
+                <li><a href="/ADMIN/create_user">Create New Users</a></li>
+                <li><a href="/ADMIN/create_course">Create New Courses</a></li>
+                <li><a href="/logout">Log Out</a></li>
+            </ul>
+        </div>
 
         <div id="content">
-            <center>
-                <h1>Create a New User</h1>
-                {% if userAlreadyExists == 1 %}
-                <p style="color:red"><b>"{{username}}" already exists in system</b></p>
-                {% endif %}
-                <form method="post" name ="newAccountForm">
-                    <label>New Username:</label><input type="text" class="loginbox" name="ePantherID" required="true">
-                    <br>
-                    <label>Password:</label><input type="text" name="password" required="true">
-                    <br>
-                    <label>Credential Type</label>
-                    <br>
-                    Instructor:<input type="radio" name="credential" value = "instructor" required="true">
-                    Student:<input type="radio" name="credential" value = "student" required="true">
-                    <br>
-                    <input class="button" type="submit">
-                </form>
-            </center>
+            <h1>Create a New User</h1>
+            {% if userAlreadyExists == 1 %}
+            <p style="color:red"><b>"{{username}}" already exists in system</b></p>
+            {% endif %}
+            <form method="post" name ="newAccountForm">
+                <table>
+                    <tr>
+                        <td>
+                            New Username:
+                        </td>
+                        <td>
+                            <input type="text" class="loginbox" name="ePantherID" required="true">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Password:
+                        </td>
+                        <td>
+                            <input type="text" name="password" required="true">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="2">
+                            Credential Type:
+                        </td>
+                        <td>
+                            Instructor<input type="radio" name="credential" value = "instructor" required="true">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Student<input type="radio" name="credential" value = "student" required="true">
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <input type="submit" value="Submit">
+            </form>
         </div>
     </body>
 </html>

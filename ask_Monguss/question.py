@@ -1,5 +1,4 @@
 import types
-from reply import Reply
 from google.appengine.ext import ndb
 
 
@@ -13,5 +12,5 @@ class Question(ndb.Model):
 
     answer = ndb.StringProperty()
     faqAttachments = ndb.KeyProperty(repeated=True)
-    replies = ndb.StructuredProperty(Reply, repeated=True)
-    timestamp = ndb.DateTimeProperty()
+    date_submitted = ndb.DateTimeProperty()
+    date_answered = ndb.DateTimeProperty()

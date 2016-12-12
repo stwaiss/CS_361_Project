@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Course Successfully Created</title>
-     <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+    <link rel="stylesheet" type="text/css" href="/CSS/main.css">
+
+    <style>
+        th{
+            text-align: center;
+        }
+
+        td{
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
     <div id="content">
+        {% if preexisting == 0 %}
         <h1>{{courseID}} has been successfully created. Below are the added users:</h1>
-
         <table>
             <tr>
                 <th><h4>Instructors</h4></th>
@@ -17,21 +27,64 @@
             </tr>
             <tr>
                 <td>
-                    <ul>
-                        {% for i in addedInstructors %}
-                        <li>{{i}}</li>
-                        {% endfor %}
-                    </ul>
+                    {% for i in addedInstructors %}
+                    <p>{{i}}</p>
+                    {% endfor %}
                 </td>
 
                 <td>
-                    <ul>
-                        {% for s in addedStudents %}
-                        <li>{{s}}</li>
-                        {% endfor %}
-                    </ul>
+                    {% for s in addedStudents %}
+                    <p>{{s}}</p>
+                    {% endfor %}
                 </td>
         </table>
+
+        {% elif preexisting == 1 %}
+        <h1>{{courseID}} already exists in the system, but the below users have been added.</h1>
+
+         <table>
+            <tr>
+                <th><h4>Added Instructors</h4></th>
+                <th><h4>Added Students</h4></th>
+            </tr>
+            <tr>
+                <td>
+                    {% for i in addedInstructors %}
+                    <p>{{i}}</p>
+                    {% endfor %}
+                </td>
+
+                <td>
+                    {% for s in addedStudents %}
+                    <p>{{s}}</p>
+                    {% endfor %}
+                </td>
+             </tr>
+        </table>
+
+        <table>
+            <tr>
+                <td><h4>All Instructors</h4></td>
+                <td><h4>All Students</h4></td>
+            </tr>
+            <tr>
+                <td>
+                    {% for i in allInstructors %}
+                    <p>{{i.get().ePantherID}}</p>
+                    {% endfor %}
+                </td>
+
+                <td>
+                    {% for s in allStudents %}
+                    <p>{{s.get().ePantherID}}</p>
+                    {% endfor %}
+                </td>
+             </tr>
+
+        </table>
+
+        {% endif %}
+
 
         <form action="/ADMIN/create_course" method="get">
             <input type="submit" value="Back">

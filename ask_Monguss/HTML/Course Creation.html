@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Create a New Course</title>
-    <link rel="stylesheet" type="text/css" href="../CSS/main.css">
+    <link rel="stylesheet" type="text/css" href="/CSS/main.css">
 </head>
 <body>
-    <div id="menubar">
-
+    <div>
+        <ul>
+            <li class="username">{{username}}</a></li>
+            <li><a href="/ADMIN">Home</a></li>
+            <li><a href="/ADMIN/create_user">Create New Users</a></li>
+            <li><a href="/ADMIN/create_course">Create New Courses</a></li>
+            <li><a href="/logout">Log Out</a></li>
+        </ul>
     </div>
 
 
     <div id="content">
-        <h1>Create a New Course</h1>
+        <h1>Create a New Course or Add Users to an Existing Course</h1>
+
+        {% if empty_checkboxes == 1 %}
+         <p style="color:red" align="center"><b>At least 1 Student and 1 Instructor must be selected</b></p>
+        {% endif %}
+
 
         <form action="/ADMIN/create_course" method="post">
             <table border="0">
                 <tr>
                     <td>Course ID</td>
-                    <td> <input type="text" name="courseID" placeholder="CS101" maxlength="6"></td>
+                    <td> <input type="text" name="courseID" placeholder="CS101" maxlength="6" required="true"></td>
                 </tr>
             </table>
 
@@ -43,7 +54,11 @@
                         {% endfor %}
                     </td>
                 </tr>
+
             </table>
+
+            <br>
+
             <input type="submit" value="Submit">
         </form>
     </div>

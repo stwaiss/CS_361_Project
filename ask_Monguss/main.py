@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# .strftime('%m-%d-%Y')
 
 import webapp2
 import jinja2
@@ -23,9 +22,6 @@ from user import User
 from course import Course
 from faq import FAQ
 from question import Question
-from timestamp import Timestamp
-from reply import Reply
-import time
 import datetime
 from google.appengine.ext import ndb
 
@@ -70,74 +66,65 @@ class MainHandler(webapp2.RequestHandler):
 
 
 class LoginHandler(webapp2.RequestHandler):
-    postedUsername = ""
-    postedPassword = ""
-    match = -1
-
-    def checkForMatch(self, username, password):
-        # pull all students and check
-        students = User.query(User.ePantherID == username and User.isInstructor == 0).fetch()
-        for s in students:
-            if s.password == password:
-                return 0
-
-        # pull all instructors and check
-        instructors = User.query(User.ePantherID == username and User.isInstructor == 1).fetch()
-        for i in instructors:
-            if i.password == password:
-                return 1
-
-        # check if administrator
-        if username == "ADMIN" and password == "ADMIN":
-            return 2
-        return -1
-
     def post(self):
-        self.postedUsername = self.request.get('ePantherID')
-        self.postedPassword = self.request.get('password')
+        postedUsername = self.request.get('ePantherID')
+        postedPassword = self.request.get('password')
 
-        self.match = self.checkForMatch(self.postedUsername, self.postedPassword)
+        # check if user is ADMIN
+        if postedUsername == postedPassword == "ADMIN":
+            self.response.set_cookie('name', postedUsername, path='/')
+            self.redirect('/ADMIN')
+            return
 
-        if self.match == -1:
+        # check if user is in system
+        user_list = User.query(User.ePantherID == postedUsername, User.password == postedPassword).fetch()
+
+        if len(user_list) !=0:
+            user = user_list[0]
+
+            if user.isInstructor == 0:
+                self.response.set_cookie('name', postedUsername, path='/')
+                self.redirect('/student')
+                return
+
+            if user.isInstructor == 1:
+                self.response.set_cookie('name', postedUsername, path='/')
+                self.redirect('/instructor')
+                return      
+        
+        # user isn't in system so render error message
+        else:
             values = {
-                'credentials': self.match
+                'badCombo': 1
             }
 
             template = JINJA_ENVIRONMENT.get_template('HTML/Login.html')
             self.response.write(template.render(values))
             return
 
-        elif self.match == 0:
-            self.response.set_cookie('name', self.postedUsername, path='/')
-            self.redirect('/student')
-            return
-
-        elif self.match == 1:
-            self.response.set_cookie('name', self.postedUsername, path='/')
-            self.redirect('/instructor')
-            return
-
-        elif self.match == 2:
-            self.response.set_cookie('name', self.postedUsername, path='/')
-            self.redirect('/ADMIN')
-            return
-
 
 class LogoutHandler(webapp2.RequestHandler):
     def get(self):
+        # pull value from cookie key
         name = self.request.cookies.get('name')
+
+        # delete cookie
         self.response.delete_cookie('name')
+
+        # render successful log out template
         value = {
             'username': name
         }
 
-        template = JINJA_ENVIRONMENT.get_template('HTML/Logout.html')
+        template = JINJA_ENVIRONMENT.get_template('HTML/logout.html')
         self.response.write(template.render(value))
 
 
 class AllFAQHandler(webapp2.RequestHandler):
     # only one of two screens that doesn't use user authentication
     def get(self):
+        # check if user selected course from dropdown
+        # if not, render dropdown only
         if self.request.get('course') == "":
             allCourses = Course.query().fetch()
 
@@ -148,10 +135,13 @@ class AllFAQHandler(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('HTML/All FAQ.html')
             self.response.write(template.render(values))
 
+        # if selected, render selected course FAQ
         else:
+            allCourses = Course.query().fetch()
             course = Course.query(Course.name == self.request.get('course')).fetch()[0]
 
             values = {
+                "allCourses": allCourses,
                 "isChosen": 1,
                 "courseName": self.request.get('course'),
                 "faq": course.FAQ
@@ -160,8 +150,16 @@ class AllFAQHandler(webapp2.RequestHandler):
             self.response.write(template.render(values))
 
 
+class AboutHandler(webapp2.RequestHandler):
+    def get(self):
+        # static document, so render as normal
+        template = JINJA_ENVIRONMENT.get_template('HTML/About.html')
+        self.response.write(template.render())
+
+
 class ChangePasswordHandler(webapp2.RequestHandler):
     def get(self):
+        # check for correct cookie
         name = self.request.cookies.get('name')
         all_users = User.query(User.ePantherID == name).fetch()
 
@@ -180,6 +178,7 @@ class ChangePasswordHandler(webapp2.RequestHandler):
             self.redirect('/')
 
     def post(self):
+        # check for correct cookie
         name = self.request.cookies.get('name')
         all_users = User.query(User.ePantherID == name).fetch()
 
@@ -227,6 +226,7 @@ class StudentLandingPageHandler(webapp2.RequestHandler):
         if len(students) != 0:
             curStudent = students[0]
 
+            # pull counts of answered and unanswered questions
             allQuestionsQuery = Question.query(Question.student == curStudent.key)
             allQuestionsCount = allQuestionsQuery.count()
 
@@ -257,6 +257,7 @@ class StudentAskHandler(webapp2.RequestHandler):
         if len(students) != 0:
             curStudent = students[0]
 
+            # if dropdown hasn't been selected, render dropdown only    
             if self.request.get('course') == "":
                 values = {
                     'username': curStudent.ePantherID,
@@ -268,6 +269,7 @@ class StudentAskHandler(webapp2.RequestHandler):
                 template = JINJA_ENVIRONMENT.get_template('HTML/Student Question Submission Form.html')
                 self.response.write(template.render(values))
 
+            # else, render page with selected course and that course's instructors
             else:
                 course_name = self.request.get('course')
                 course = Course.query(Course.name == course_name).fetch()[0]
@@ -276,6 +278,8 @@ class StudentAskHandler(webapp2.RequestHandler):
                     'course': curStudent.courses,
                     'isChosen': 1,
                     'instructors': course.instructors,
+
+                    # this allows for info to be passed from get and post methods
                     'hiddencourse': course_name
                 }
                 template = JINJA_ENVIRONMENT.get_template('HTML/Student Question Submission Form.html')
@@ -292,6 +296,8 @@ class StudentAskHandler(webapp2.RequestHandler):
 
         # if cookie is correct, render page
         if len(students) != 0:
+
+            # pull all values from form
             body = self.request.get('body')
             topic = self.request.get('topic')
             student_key = students[0].key
@@ -300,7 +306,9 @@ class StudentAskHandler(webapp2.RequestHandler):
             time = datetime.datetime.now()
             course_name = self.request.get('hiddencourse')
             course_key = Course.query(Course.name == course_name).fetch()[0].key
-            q = Question(body=body, topic=topic, student=student_key, instructor=instructor_key, course=course_key, timestamp=time, answer="")
+
+            # create question entity
+            q = Question(body=body, topic=topic, student=student_key, instructor=instructor_key, course=course_key, date_submitted=time, answer="")
 
             # put question to datastore
             q_key = q.put()
@@ -369,12 +377,11 @@ class StudentViewAllQuestionsHandler(webapp2.RequestHandler):
 
         # if cookie is correct, render page
         if len(students) != 0:
+
             curStudent = students[0]
-            question_query = Question.query(Question.student == curStudent.key)
-            questions = question_query.fetch()
             values = {
                 "username": curStudent.ePantherID,
-                "questions": questions
+                "questions": curStudent.questions
             }
             template = JINJA_ENVIRONMENT.get_template('HTML/Student View All Answers.html')
             self.response.write(template.render(values))
@@ -394,7 +401,7 @@ class InstructorLandingPageHandler(webapp2.RequestHandler):
         if len(instructors) != 0:
             curInstructor = instructors[0]
 
-            # landing page statistics
+            # pull various landing page statistics
             totalQuestions = Question.query(Question.instructor == curInstructor.key).count()
             answeredQuestions = Question.query(Question.instructor == curInstructor.key, Question.answer != "").count()
             unansweredQuestions = totalQuestions - answeredQuestions
@@ -432,6 +439,7 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
                     "courses": curInstructor.courses,
                     "isChosen": 0
                 }
+
             else:
                 selected_course = Course.query(Course.name == chosenCourse).fetch()[0]
                 values = {
@@ -448,6 +456,59 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
             self.redirect('/')
 
 
+class InstructorAnswerHandler(webapp2.RequestHandler):
+    def get(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
+
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            curInstructor = instructors[0]
+
+            # get question key from page and turn back into question entity
+            question_key_string = self.request.get('question_key')
+            question_key = ndb.Key(urlsafe=question_key_string)
+            question = question_key.get()
+
+            values = {
+                "username": curInstructor.ePantherID,
+                "question": question
+            }
+            template = JINJA_ENVIRONMENT.get_template('HTML/Instructor Give Answer.html')
+            self.response.write(template.render(values))
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+    def post(self):
+        # check for correct cookie
+        name = self.request.cookies.get("name")
+        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
+
+        # if cookie is correct, render page
+        if len(instructors) != 0:
+            curInstructor = instructors[0]
+
+            # get question key from page and turn back into question entity
+            question_key_string = self.request.get('question_key')
+            question_key = ndb.Key(urlsafe=question_key_string)
+            question = question_key.get()
+
+            # update fields of question and put back
+            question.answer = self.request.get('answer')
+            question.date_answered = datetime.datetime.now()
+            question.put()
+
+            self.redirect('/instructor/view_all')
+
+
+        # else redirect to login page
+        else:
+            self.redirect('/')
+
+
 class InstructorFaqHandler(webapp2.RequestHandler):
     def get(self):
         name = self.request.cookies.get("name")
@@ -455,6 +516,8 @@ class InstructorFaqHandler(webapp2.RequestHandler):
 
         # if cookie is correct, render page
         if len(instructors) != 0:
+
+            # check if dropdown has been selected, if not, render list of courses
             if self.request.get('course') == "":
                 curInstructor = instructors[0]
                 values = {
@@ -464,6 +527,8 @@ class InstructorFaqHandler(webapp2.RequestHandler):
 
                 template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ.html')
                 self.response.write(template.render(values))
+
+            # if a dropdown has been selected, render that course's FAQ
             else:
                 curInstructor = instructors[0]
                 course = Course.query(Course.name == self.request.get('course')).fetch()[0]
@@ -532,40 +597,6 @@ class InstructorFaqAddHandler(webapp2.RequestHandler):
 
 
 class InstructorFaqDeleteHandler(webapp2.RequestHandler):
-    def get(self):
-        # check for correct cookie
-        name = self.request.cookies.get("name")
-        instructors = User.query(User.ePantherID == name, User.isInstructor == 1).fetch()
-
-        # if cookie is correct, render page
-        if len(instructors) != 0:
-            # check if course dropdown has been selected
-            if self.request.get('course') == "":
-                curInstructor = instructors[0]
-                values = {
-                    "username": curInstructor,
-                    "courseIsChosen": 0
-                }
-                template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Delete.html')
-                self.response.write(template.render(values))
-
-            else:
-                curInstructor = instructors[0]
-                selected_course_name = self.request.get('course')
-                course = Course.query(Course.name == selected_course_name).fetch()[0]
-
-                values = {
-                    "username": curInstructor,
-                    "courseIsChosen": 1,
-                    "questions": course.FAQ
-                }
-                template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Delete.html')
-                self.response.write(template.render(values))
-
-        # else redirect to login page
-        else:
-            self.redirect('/')
-
     def post(self):
         # check for correct cookie
         name = self.request.cookies.get("name")
@@ -575,26 +606,21 @@ class InstructorFaqDeleteHandler(webapp2.RequestHandler):
         if len(instructors) != 0:
             curInstructor = instructors[0]
 
-            if self.request.get('question') !="":
-                # delete faq item from the course faq item list
-                faq_to_delete = FAQ.query(FAQ.question == self.request.get('question')).fetch()[0]
-                course = faq_to_delete.course.get()
-                course.FAQ.remove(faq_to_delete.key)
-                course.put()
+            # get key from hidden field
+            faq_key_string = self.request.get('faq_key')
+            faq_key = ndb.Key(urlsafe=faq_key_string)
+            faq = faq_key.get()
 
-                # delete the actual faq item from the datastore
-                faq_to_delete.key.delete()
+            # delete faq entry from course
+            course = faq.course.get()
+            course.FAQ.remove(faq_key)
+            course.put()
 
-                self.redirect('/instructor/faq')
+            # delete faq item
+            faq_key.delete()
 
-            else:
-                values = {
-                    "noQuestionChosen": 1,
-                    "username": curInstructor,
-                    "courseIsChosen": 1
-                }
-                template = JINJA_ENVIRONMENT.get_template('HTML/Instructor FAQ Delete.html')
-                self.response.write(template.render(values))
+            # redirect back to faq page
+            self.redirect('/instructor/faq')
 
         # else redirect to login page
         else:
@@ -612,12 +638,12 @@ class ADMINHandler(webapp2.RequestHandler):
             numberOfInstructors = User.query(User.isInstructor == 1).count()
             numberOfCourses = Course.query().count()
             studentInstructorRatio = round(float(numberOfStudents)/float(numberOfInstructors), 3)
-
             totalQuestionsCount = Question.query().count()
             answeredQuestionsCount = Question.query(Question.answer != "").count()
             unansweredQuestionsCount = totalQuestionsCount - answeredQuestionsCount
+
             values = {
-                "username": name,
+                "username": "ADMINISTRATOR",
                 "numberOfStudents": numberOfStudents,
                 "numberOfInstructors": numberOfInstructors,
                 "numberOfCourses": numberOfCourses,
@@ -633,9 +659,6 @@ class ADMINHandler(webapp2.RequestHandler):
         # else redirect to login page
         else:
             self.redirect('/')
-
-    def post(self):
-        pass
 
 
 class ADMINAccountCreationHandler(webapp2.RequestHandler):
@@ -658,10 +681,13 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
         name = self.request.cookies.get("name")
 
         if name == "ADMIN":
+
+            # pull form data
             username = self.request.get('ePantherID')
             password = self.request.get('password')
             credential = self.request.get('credential')
 
+            # if instructor is selected, create new instructor and render success message
             if credential == "instructor":
                 list = User.query(User.ePantherID == username).fetch()
                 if len(list) == 0:
@@ -688,6 +714,7 @@ class ADMINAccountCreationHandler(webapp2.RequestHandler):
                     self.response.write(template.render(values))
                     return
 
+            # if student is selected, create new student and render success message
             if credential == "student":
                 list = User.query(User.ePantherID == username).fetch()
                 if len(list) == 0:
@@ -724,6 +751,8 @@ class ADMINCourseCreationHandler(webapp2.RequestHandler):
         # check for correct cookie
         name = self.request.cookies.get("name")
         if name == "ADMIN":
+
+            # pull current list of all students and instructors
             all_instructors = User.query(User.isInstructor == 1).fetch()
             all_students = User.query(User.isInstructor == 0).fetch()
 
@@ -744,43 +773,103 @@ class ADMINCourseCreationHandler(webapp2.RequestHandler):
         # check for correct cookie
         name = self.request.cookies.get("name")
         if name == "ADMIN":
+            # create course exists flag
+            preexisting = 0
+
             # store form data
             course_ID = self.request.get('courseID')
             selected_instructors_list = self.request.get_all('instructors')
             selected_students_list = self.request.get_all('students')
 
-            # create new course and retain key
-            course_key = Course(name=course_ID).put()
-            course = course_key.get()
+            # check if at least one student and one instructor have been check, if not, render error message
+            if len(selected_students_list) == 0 or len(selected_instructors_list) == 0:
+                all_instructors = User.query(User.isInstructor == 1).fetch()
+                all_students = User.query(User.isInstructor == 0).fetch()
 
-            # iterate over check boxes to add instructors to courses
-            for i in selected_instructors_list:
-                instructor = User.query(User.ePantherID == i).fetch()[0]
+                values = {
+                    "username": "ADMINISTRATOR",
+                    "all_instructors": all_instructors,
+                    "all_students": all_students,
+                    "empty_checkboxes": 1,
+                }
 
-                # add course key to instructor and put back
-                instructor.courses.append(course_key)
-                instructor.put()
+                template = JINJA_ENVIRONMENT.get_template('HTML/Course Creation.html')
+                self.response.write(template.render(values))
+                return
 
-                # add instructor key to course and put back
-                course.instructors.append(instructor.key)
-                course.put()
+            # check if course exists
+            existingCourseList = Course.query(Course.name == course_ID).fetch()
 
-            # iterate over check boxes to add students to courses
-            for s in selected_students_list:
-                student = User.query(User.ePantherID == s).fetch()[0]
+            if len(existingCourseList) != 0:
+                preexisting = 1
+                existingCourse = existingCourseList[0]
 
-                # add course key to student and put back
-                student.courses.append(course_key)
-                student.put()
+                # iterate over check boxes to check if already added or to add new instructors to courses
+                for i in selected_instructors_list:
+                    # pull instructor from list
+                    instructor = User.query(User.ePantherID == i).fetch()[0]
 
-                # add student key to course and put back
-                course.students.append(student.key)
-                course.put()
+                    if instructor.key not in existingCourse.instructors:
+                        # add course key to instructor and put back
+                        instructor.courses.append(existingCourse.key)
+                        instructor.put()
 
+                        # add instructor key to course and put back
+                        existingCourse.instructors.append(instructor.key)
+                        existingCourse.put()
+
+
+                # iterate over check boxes to add students to courses
+                for s in selected_students_list:
+                    student = User.query(User.ePantherID == s).fetch()[0]
+
+                    if student.key not in existingCourse.students:
+                        # add course key to student and put back
+                        student.courses.append(existingCourse.key)
+                        student.put()
+
+                        # add student key to course and put back
+                        existingCourse.students.append(student.key)
+                        existingCourse.put()
+
+            else:
+                # create new course and retain key
+                course_key = Course(name=course_ID).put()
+                course = course_key.get()
+
+                # iterate over check boxes to add instructors to courses
+                for i in selected_instructors_list:
+                    instructor = User.query(User.ePantherID == i).fetch()[0]
+
+                    # add course key to instructor and put back
+                    instructor.courses.append(course_key)
+                    instructor.put()
+
+                    # add instructor key to course and put back
+                    course.instructors.append(instructor.key)
+                    course.put()
+
+                # iterate over check boxes to add students to courses
+                for s in selected_students_list:
+                    student = User.query(User.ePantherID == s).fetch()[0]
+
+                    # add course key to student and put back
+                    student.courses.append(course_key)
+                    student.put()
+
+                    # add student key to course and put back
+                    course.students.append(student.key)
+                    course.put()
+
+            final_instructors_list = Course.query(Course.name == course_ID).fetch()[0].instructors
+            final_students_list = Course.query(Course.name == course_ID).fetch()[0].students
             values = {
                 "courseID": course_ID,
+                "preexisting": preexisting,
                 "addedStudents": selected_students_list,
-                "addedInstructors": selected_instructors_list
+                "addedInstructors": selected_instructors_list,
+                "allStudents": final_students_list,
+                "allInstructors": final_instructors_list
             }
 
             template = JINJA_ENVIRONMENT.get_template('HTML/Course Creation Successful.html')
@@ -797,6 +886,7 @@ app = webapp2.WSGIApplication([
     ('/login', LoginHandler),
     ('/logout', LogoutHandler),
     ('/all_faq', AllFAQHandler),
+    ('/about', AboutHandler),
     ('/change_password',ChangePasswordHandler),
     ('/student', StudentLandingPageHandler),
     ('/student/ask', StudentAskHandler),
@@ -804,10 +894,11 @@ app = webapp2.WSGIApplication([
     ('/student/view_all', StudentViewAllQuestionsHandler),
     ('/instructor', InstructorLandingPageHandler),
     ('/instructor/view_all', InstructorViewAllQuestionsHandler),
+    ('/instructor/answer', InstructorAnswerHandler),
     ('/instructor/faq', InstructorFaqHandler),
     ('/instructor/faq/faq_add', InstructorFaqAddHandler),
     ('/instructor/faq/faq_delete', InstructorFaqDeleteHandler),
     ('/ADMIN', ADMINHandler),
     ('/ADMIN/create_user', ADMINAccountCreationHandler),
     ('/ADMIN/create_course', ADMINCourseCreationHandler)
-], debug=True)
+], debug=False)
