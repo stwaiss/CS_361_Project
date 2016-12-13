@@ -33,6 +33,7 @@
 					<th>Course #</th>
 					<th>Question</th>
 					<th>Answer</th>
+					<th>Instructor</th>
 					<th>Date Submitted</th>
 					<th>Date Answered</th>
 				</tr>
@@ -42,34 +43,38 @@
 				{% for q in questions %}
 				<tr>
 					<td>
-						{{q.course.get().name}}
+						{{q.get().course.get().name}}
 					</td>
 
 					<td>
-						{{q.body}}
+						{{q.get().body}}
 					</td>
 
 					<td>
-						{% if q.answer == "" %}
+						{% if q.get().answer == "" %}
 						(Not yet answered)
 						{% endif %}
 
-						{% if q.answer != "" %}
-						{{q.answer}}
+						{% if q.get().answer != "" %}
+						{{q.get().answer}}
 						{% endif %}
 					</td>
 
 					<td>
-						{{q.date_submitted.strftime('%m-%d-%Y')}}
+						{{q.get().instructor.get().ePantherID}}
 					</td>
 
 					<td>
-						{% if q.answer == "" %}
+						{{q.get().date_submitted.strftime('%m-%d-%Y')}}
+					</td>
+
+					<td>
+						{% if q.get().answer == "" %}
 						N/A
 						{% endif %}
 
-						{% if q.answer != "" %}
-						{{q.date_answered.strftime('%m-%d-%Y')}}
+						{% if q.get().answer != "" %}
+						{{q.get().date_answered.strftime('%m-%d-%Y')}}
 						{% endif %}
 					</td>
 

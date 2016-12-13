@@ -442,11 +442,14 @@ class InstructorViewAllQuestionsHandler(webapp2.RequestHandler):
 
             else:
                 selected_course = Course.query(Course.name == chosenCourse).fetch()[0]
+                question_list = Question.query(Question.course == selected_course.key, Question.instructor == curInstructor.key).fetch()
                 values = {
                     "username": curInstructor.ePantherID,
                     "courses": curInstructor.courses,
                     "isChosen": 1,
-                    "courseQuestions": selected_course
+                    "courseName": selected_course.name,
+                    "questionsForInstructor": question_list
+
                 }
             template = JINJA_ENVIRONMENT.get_template('HTML/Instructor View Questions.html')
             self.response.write(template.render(values))
