@@ -886,16 +886,28 @@ class ADMINCourseCreationHandler(webapp2.RequestHandler):
         # else redirect to login page
         else:
             self.redirect('/')
-			
+
+
 class TestCaseHandler(webapp2.RequestHandler):
-	def get(self):
-		suite = unittest.TestLoader().loadTestsFromTestCase(AskMongussTest)
-		output = unittest.TestResult()
-		suite.run(output)
-		out = TestResult(output).getTestsReport()
-		
-		template = JINJA_ENVIRONMENT.get_template('HTML/test.html')
-		self.response.write(template.render(out))
+    def get(self):
+        suite = unittest.TestLoader().loadTestsFromTestCase(AskMongussTest)
+        output = unittest.TestResult()
+        suite.run(output)
+
+        numberOfErrors = len(output.errors)
+        numberOfFailures = len(output.failures)
+        numberSkipped = len(output.skipped)
+
+        values = {
+            "output": output,
+            "numberOfErrors": numberOfErrors,
+            "numberOfFailures": numberOfFailures,
+            "numberSkipped": numberSkipped
+
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('HTML/test.html')
+        self.response.write(template.render(values))
 
 
 app = webapp2.WSGIApplication([
@@ -919,4 +931,4 @@ app = webapp2.WSGIApplication([
     ('/ADMIN/create_user', ADMINAccountCreationHandler),
     ('/ADMIN/create_course', ADMINCourseCreationHandler),
 	('/Test', TestCaseHandler)
-], debug=False)
+], debug=True)
