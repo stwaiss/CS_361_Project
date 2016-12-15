@@ -24,6 +24,9 @@ from faq import FAQ
 from question import Question
 import datetime
 from google.appengine.ext import ndb
+from test import AskMongussTest
+import unittest
+import HTMLTestRunner
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
@@ -879,6 +882,18 @@ class ADMINCourseCreationHandler(webapp2.RequestHandler):
         # else redirect to login page
         else:
             self.redirect('/')
+			
+class TestCaseHandler(webapp2.RequestHandler):
+	def get(self):
+		suite = unittest.TestLoader().loadTestsFromTestCase(AskMongussTest)
+		unittest.TextTestRunner(verbosity=2)
+		output = ''
+		runner = HTMLTestRunner.HTMLTestRunner(stream=output,title='Test Report',description='Unit Test Report for AskMonguss')
+		runner.run(suite)
+		
+		template = JINJA_ENVIRONMENT.get_template('HTML/test.html')
+		self.response.write(template.render(output))
+		print output
 
 
 app = webapp2.WSGIApplication([
@@ -900,5 +915,6 @@ app = webapp2.WSGIApplication([
     ('/instructor/faq/faq_delete', InstructorFaqDeleteHandler),
     ('/ADMIN', ADMINHandler),
     ('/ADMIN/create_user', ADMINAccountCreationHandler),
-    ('/ADMIN/create_course', ADMINCourseCreationHandler)
+    ('/ADMIN/create_course', ADMINCourseCreationHandler),
+	('/Test', TestCaseHandler)
 ], debug=False)

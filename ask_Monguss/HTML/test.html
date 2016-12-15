@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Results</title>
+    <link rel="stylesheet" type="text/css" href="/CSS/main.css">
+ </head>
+<body>
+    <div>
+		<ul>
+			<li><a href="/login">Home</a></li>
+		</ul>
+	</div>
+
+    <div id="content">
+        <center>
+            <h1>Welcome to the Test page</h1>
+            <h2>Status: Currently Online</h2>
+
+            <hr>
+
+            <h3 align="center">Test Results</h3>
+            <table>
+                <th>
+                    Description
+                </th>
+
+                <th>
+                    Result
+                </th>
+				{% for o in output %}
+                <tr>
+                    <td>
+                        {{o}}
+                    </td>
+                </tr>
+				{% endfor %}
+            </table>
+        </center>
+    </div>
+</body>
+</html>
