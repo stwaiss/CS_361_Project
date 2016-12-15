@@ -22,16 +22,31 @@
             <h3 align="center">Test Results</h3>
             <table>
                 <th>
-                    Description
+                    Tests Run
                 </th>
 
                 <th>
-                    Result
+                    Errors
+                </th>
+				<th>
+                    Failures
+                </th>
+				<th>
+                    Skipped
                 </th>
 				{% for o in output %}
                 <tr>
                     <td>
-                        {{o}}
+                        {{o.testsRun}}
+                    </td>
+					<td>
+                        {{o.error}}
+                    </td>
+					<td>
+                        {{o.failures}}
+                    </td>
+					<td>
+                        {{o.skipped}}
                     </td>
                 </tr>
 				{% endfor %}

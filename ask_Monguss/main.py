@@ -25,6 +25,7 @@ from question import Question
 import datetime
 from google.appengine.ext import ndb
 from test import AskMongussTest
+from test import TestResult
 import unittest
 import HTMLTestRunner
 
@@ -889,14 +890,12 @@ class ADMINCourseCreationHandler(webapp2.RequestHandler):
 class TestCaseHandler(webapp2.RequestHandler):
 	def get(self):
 		suite = unittest.TestLoader().loadTestsFromTestCase(AskMongussTest)
-		unittest.TextTestRunner(verbosity=2)
-		output = ''
-		runner = HTMLTestRunner.HTMLTestRunner(stream=output,title='Test Report',description='Unit Test Report for AskMonguss')
-		runner.run(suite)
+		output = unittest.TestResult()
+		suite.run(output)
+		out = TestResult(output).getTestsReport()
 		
 		template = JINJA_ENVIRONMENT.get_template('HTML/test.html')
-		self.response.write(template.render(output))
-		print output
+		self.response.write(template.render(out))
 
 
 app = webapp2.WSGIApplication([
