@@ -21,35 +21,40 @@
 
             <h3 align="center">Test Results</h3>
             <table>
-                <th>
+                <tr>
+                     <th>
                     Tests Run
                 </th>
 
                 <th>
                     Errors
                 </th>
+
 				<th>
                     Failures
                 </th>
-				<th>
+
+                <th>
                     Skipped
                 </th>
-				{% for o in output %}
+                </tr>
+
+
                 <tr>
                     <td>
-                        {{o.testsRun}}
+                        {{output.testsRun}}
                     </td>
 					<td>
-                        {{o.error}}
+                        {{numberOfErrors}}
                     </td>
 					<td>
-                        {{o.failures}}
+                        {{numberOfFailures}}
                     </td>
 					<td>
-                        {{o.skipped}}
+                        {{numberSkipped}}
                     </td>
                 </tr>
-				{% endfor %}
+
             </table>
         </center>
     </div>
