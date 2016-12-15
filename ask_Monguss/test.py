@@ -9,7 +9,7 @@ from google.appengine.ext import ndb
 
 class AskMongussTest(unittest.TestCase):
 
-	def ndb_test(self):
+	def test_ndb(self):
 		res = unittest.TestResult()
 		test = Course(parent=ndb.Key("CS337"),name="CS337")
 		test.put()
@@ -17,16 +17,16 @@ class AskMongussTest(unittest.TestCase):
 
 		self.assertTrue(test2)
 		
-		print res
 		
-	def ndb_test2(self):
+		
+	def test_ndb2(self):
 		res = unittest.TestResult()
 		test = Course.query("CS337").fetch()
 		
 		self.assertEqual(test[0].name, "CS337")
-		print res
 		
-	def question_test(self):
+		
+	def test_question(self):
 		res = unittest.TestResult()
 		test = Question(topic="Test",body="None",student="hessaj",instructor="jrock",course="CS361")
 		self.assertTrue(test.topic)
@@ -36,9 +36,9 @@ class AskMongussTest(unittest.TestCase):
 		self.assertTrue(test.instructor)
 		self.assertTrue(test.course)
 		self.assertFalse(test.answer)
-		print res
 		
-	def faq_test(self):
+		
+	def test_faq(self):
 		res = unittest.TestResult()
 		test = FAQ(question="How?",answer="I don't know",course="CS361")
 		self.assertTrue(test.question)
@@ -47,14 +47,15 @@ class AskMongussTest(unittest.TestCase):
 		self.assertEqual(test.answer, "I don't know")
 		self.assertTrue(test.course)
 		self.assertEqual(test.course, "CS361")
-		print res
+		self.assertEqual(test.course, "CS337")
 		
-	def user_test(self):
+		
+	def test_user(self):
 		res = unittest.TestResult()
 		test = User(ePantherID="hessaj",isInstructor="0")
 		self.assertEqual(test.ePantherID, "hessaj")
 		self.assertFalse(isInstructor)
-		print res
+		
 		
 class TestResult(object):
 
