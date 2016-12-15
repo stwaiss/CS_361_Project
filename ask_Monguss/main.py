@@ -889,26 +889,31 @@ class ADMINCourseCreationHandler(webapp2.RequestHandler):
 
 class TestCaseHandler(webapp2.RequestHandler):
     def get(self):
-        suite = unittest.TestLoader().loadTestsFromTestCase(AskMongussTest)
-        output = unittest.TestResult()
-        suite.run(output)
+		ids = []
+		suite = unittest.TestLoader().loadTestsFromTestCase(AskMongussTest)
+		output = unittest.TestResult()
+		suite.run(output)
 
-        numberOfErrors = len(output.errors)
-        numberOfFailures = len(output.failures)
-        numberSkipped = len(output.skipped)
+		numberOfErrors = len(output.errors)
+		numberOfFailures = len(output.failures)
+		numberSkipped = len(output.skipped)
+		
+		for x in suite:
+			ids.append(x.id())
 
-        values = {
-            "output": output,
-            "numberOfErrors": numberOfErrors,
-            "numberOfFailures": numberOfFailures,
-            "numberSkipped": numberSkipped,
+		values = {
+			"output": output,
+			"numberOfErrors": numberOfErrors,
+			"numberOfFailures": numberOfFailures,
+			"numberSkipped": numberSkipped,
 			"errors": output.errors,
 			"failures": output.failures,
-			"skipped": output.skipped
-        }
+			"skipped": output.skipped,
+			"ids": ids
+		}
 
-        template = JINJA_ENVIRONMENT.get_template('HTML/test.html')
-        self.response.write(template.render(values))
+		template = JINJA_ENVIRONMENT.get_template('HTML/test.html')
+		self.response.write(template.render(values))
 
 
 app = webapp2.WSGIApplication([

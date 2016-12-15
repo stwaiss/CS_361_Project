@@ -60,13 +60,28 @@
 			<table>
 				<tr>
 					<th>
+						Tests Run
+					</th>
+				</tr>
+				{% for x in ids %}
+				<tr>
+					<td>
+						{{x}}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+			<p/>
+			<table>
+				<tr>
+					<th>
 						Errors
 					</th>
 				</tr>
 				{% for x in errors %}
 				<tr>
 					<td>
-						{{x}}
+						{{ids[loop.index]}}
 					</td>
 				</tr>
 				{% endfor %}
@@ -81,7 +96,7 @@
 				{% for x in failues %}
 				<tr>
 					<td>
-						{{x}}
+						{{ids[loop.index]}}
 					</td>
 				</tr>
 				{% endfor %}
@@ -96,7 +111,7 @@
 				{% for x in skipped %}
 				<tr>
 					<td>
-						{{x}}
+						{{ids[loop.index]}}
 					</td>
 				</tr>
 				{% endfor %}

@@ -47,7 +47,6 @@ class AskMongussTest(unittest.TestCase):
 		self.assertEqual(test.answer, "I don't know")
 		self.assertTrue(test.course)
 		self.assertEqual(test.course, "CS361")
-		self.assertEqual(test.course, "CS337")
 		
 		
 	def test_user(self):
