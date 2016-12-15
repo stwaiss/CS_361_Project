@@ -27,7 +27,6 @@ from google.appengine.ext import ndb
 from test import AskMongussTest
 from test import TestResult
 import unittest
-import HTMLTestRunner
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 

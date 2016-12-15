@@ -176,4 +176,4 @@ class TestResult(object):
         self.tests_run.append([test.shortDescription(), self.testsRun, 1])
 
 if __name__ == '__main__':
-    HTMLTestRunner.main()
+    TextTestRunner.main()
