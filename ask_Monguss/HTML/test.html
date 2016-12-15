@@ -56,6 +56,51 @@
                 </tr>
 
             </table>
+			<p/>
+			<table>
+				<tr>
+					<th>
+						Errors
+					</th>
+				</tr>
+				{% for x in errors %}
+				<tr>
+					<td>
+						{{x}}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+			<p/>
+			<table>
+				<tr>
+					<th>
+						Failures
+					</th>
+				</tr>
+				{% for x in failues %}
+				<tr>
+					<td>
+						{{x}}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+			<p/>
+			<table>
+				<tr>
+					<th>
+						Skipped
+					</th>
+				</tr>
+				{% for x in skipped %}
+				<tr>
+					<td>
+						{{x}}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
         </center>
     </div>
 </body>

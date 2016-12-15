@@ -901,8 +901,10 @@ class TestCaseHandler(webapp2.RequestHandler):
             "output": output,
             "numberOfErrors": numberOfErrors,
             "numberOfFailures": numberOfFailures,
-            "numberSkipped": numberSkipped
-
+            "numberSkipped": numberSkipped,
+			"errors": output.errors,
+			"failures": output.failures,
+			"skipped": output.skipped
         }
 
         template = JINJA_ENVIRONMENT.get_template('HTML/test.html')
