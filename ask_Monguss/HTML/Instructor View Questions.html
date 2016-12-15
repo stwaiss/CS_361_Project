@@ -34,7 +34,7 @@
 			<thead>
 				<tr>
                     <td colspan="7" align="center">
-                        <h4>{{courseQuestions.name}}</h4>
+                        <h4>{{courseName}}</h4>
                     </td>
                 </tr>
 				<tr>
@@ -49,33 +49,33 @@
 			</thead>
 
 			<tbody>
-				{% for q in courseQuestions.questions %}
+				{% for q in questionsForInstructor %}
 					<tr>
-						<td>{{q.get().topic}}</td>
-						<td>{{q.get().body}}</td>
+						<td>{{q.topic}}</td>
+						<td>{{q.body}}</td>
 
-						{% if q.get().answer != "" %}
-						<td>{{q.get().answer}}</td>
-						{% elif q.get().answer == ""%}
+						{% if q.answer != "" %}
+						<td>{{q.answer}}</td>
+						{% elif q.answer == ""%}
 						<td>Not Yet Answered</td>
 						{% endif %}
 
-						<td>{{q.get().student.get().ePantherID}}</td>
-						<td>{{q.get().date_submitted.strftime('%m-%d-%Y')}}</td>
+						<td>{{q.student.get().ePantherID}}</td>
+						<td>{{q.date_submitted.strftime('%m-%d-%Y')}}</td>
 
-						{% if q.get().answer == "" %}
+						{% if q.answer == "" %}
 						<td>Not Yet Answered</td>
 						{% endif %}
 
-						{% if q.get().answer != "" %}
-						<td>{{q.get().date_answered.strftime('%m-%d-%Y')}}</td>
+						{% if q.answer != "" %}
+						<td>{{q.date_answered.strftime('%m-%d-%Y')}}</td>
 						{% endif %}
 
 						<td>
-						{% if q.get().answer == "" %}
+						{% if q.answer == "" %}
 						<center>
 							<form action="/instructor/answer" method="get">
-								<input name="question_key" type="text" value="{{q.get().key.urlsafe()}}" hidden>
+								<input name="question_key" type="text" value="{{q.key.urlsafe()}}" hidden>
 								<input type="submit" value="Answer">
 							</form>
 						</center>
