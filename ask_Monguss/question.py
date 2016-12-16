@@ -11,6 +11,5 @@ class Question(ndb.Model):
     course = ndb.KeyProperty(required=True)
 
     answer = ndb.StringProperty()
-    faqAttachments = ndb.KeyProperty(repeated=True)
     date_submitted = ndb.DateTimeProperty()
     date_answered = ndb.DateTimeProperty()

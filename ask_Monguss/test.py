@@ -5,57 +5,40 @@ from user import User
 from course import Course
 from faq import FAQ
 from question import Question
-from google.appengine.ext import ndb
 
 class AskMongussTest(unittest.TestCase):
+    def test_course(self):
+        course = Course.query(Course.name == "CS361").fetch()[0]
+        self.assertTrue(course.name == "CS361")
 
-	def test_ndb(self):
-		res = unittest.TestResult()
-		test = Course(parent=ndb.Key("CS337"),name="CS337")
-		test.put()
-		test2 = Course.query("CS337").fetch()
+    def test_faq(self):
+        cs361 = Course.query(Course.name == "CS361").fetch()[0]
+        faq = FAQ(question="How?",answer="I don't know",course=cs361.key)
+        self.assertTrue(faq.question)
+        self.assertEqual(faq.question, "How?")
+        self.assertTrue(faq.answer)
+        self.assertEqual(faq.answer, "I don't know")
+        self.assertTrue(faq.course)
+        self.assertEqual(faq.course, Course.query(Course.name == "CS361").fetch()[0].key)
 
-		self.assertTrue(test2)
-		
-		
-		
-	def test_ndb2(self):
-		res = unittest.TestResult()
-		test = Course.query("CS337").fetch()
-		
-		self.assertEqual(test[0].name, "CS337")
-		
-		
-	def test_question(self):
-		res = unittest.TestResult()
-		test = Question(topic="Test",body="None",student="hessaj",instructor="jrock",course="CS361")
-		self.assertTrue(test.topic)
-		self.assertEqual(test.topic, "Test")
-		self.assertTrue(test.body)
-		self.assertTrue(test.student)
-		self.assertTrue(test.instructor)
-		self.assertTrue(test.course)
-		self.assertFalse(test.answer)
-		
-		
-	def test_faq(self):
-		res = unittest.TestResult()
-		test = FAQ(question="How?",answer="I don't know",course="CS361")
-		self.assertTrue(test.question)
-		self.assertEqual(test.question, "How?")
-		self.assertTrue(test.answer)
-		self.assertEqual(test.answer, "I don't know")
-		self.assertTrue(test.course)
-		self.assertEqual(test.course, "CS361")
-		
-		
-	def test_user(self):
-		res = unittest.TestResult()
-		test = User(ePantherID="hessaj",isInstructor="0")
-		self.assertEqual(test.ePantherID, "hessaj")
-		self.assertFalse(isInstructor)
-		
-		
+    def test_question(self):
+        course = Course.query(Course.name == "CS361").fetch()[0]
+        student = User.query(User.ePantherID == "janedoe").fetch()[0]
+        instructor = User.query(User.ePantherID == "jrock").fetch()[0]
+        question = Question(topic="Syllabus", body="When is the last day of class?",
+                        answer="", student=student.key, instructor=instructor.key,
+                        course=course.key)
+
+        self.assertEqual(question.topic, "Syllabus")
+        self.assertNotEqual(question.topic, "Exam")
+
+
+    def test_user(self):
+        test = User(ePantherID="hessaj", password="hessaj", isInstructor="0")
+        self.assertEqual(test.ePantherID, "hessaj")
+        self.assertFalse(test.isInstructor == 1)
+
+
 class TestResult(object):
 
     """Holder for test result information.
@@ -131,4 +114,4 @@ class TestResult(object):
         self.tests_run.append([test.shortDescription(), self.testsRun, 1])
 
 if __name__ == '__main__':
-    TextTestRunner.main()
+    HTMLTestRunner.main()
